@@ -1,0 +1,18 @@
+[build]
+  publish   = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# /api/quote?ticker=XXX  →  /.netlify/functions/quote?ticker=XXX
+[[redirects]]
+  from   = "/api/quote"
+  to     = "/.netlify/functions/quote"
+  status = 200
+
+# Racine → portfolio
+[[redirects]]
+  from   = "/"
+  to     = "/portfolio (2).html"
+  status = 200

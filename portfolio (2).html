@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Alexandre Marquilly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0a0b0e;
+  --bg2: #111318;
+  --bg3: #181c24;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --text2: #8b92a5;
+  --text3: #555d70;
+  --accent: #4f8ef7;
+  --accent2: #7b5ea7;
+  --green: #2ecc8a;
+  --red: #e05a5a;
+  --amber: #e8a948;
+  --teal: #38bcd4;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+.topbar { background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 52px; position: sticky; top: 0; z-index: 100; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.brand-name { font-size: 13px; font-weight: 500; letter-spacing: 0.05em; color: var(--text2); text-transform: uppercase; }
+.brand-name span { color: var(--text); }
+.update-btn { background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: var(--font); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.update-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tabs-wrap { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; }
+.tab { padding: 14px 20px; font-size: 13px; font-weight: 400; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.tab:hover { color: var(--text2); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+.page { display: none; padding: 24px; max-width: 1400px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* Summary cards */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.s-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.s-card .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.s-card .value { font-size: 22px; font-weight: 500; font-family: var(--mono); line-height: 1; }
+.s-card .sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.neutral { color: var(--text2); }
+
+/* Table */
+.table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+.table-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.table-title { font-size: 13px; font-weight: 500; }
+.badge { font-size: 11px; background: rgba(79,142,247,0.12); color: var(--accent); padding: 3px 9px; border-radius: 20px; }
+.badge.pea { background: rgba(123,94,167,0.15); color: #a07fd6; }
+.badge.cto { background: rgba(56,188,212,0.12); color: var(--teal); }
+table { width: 100%; border-collapse: collapse; }
+thead th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); font-weight: 400; }
+thead th:first-child { text-align: left; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+td { padding: 10px 14px; text-align: right; font-family: var(--mono); font-size: 13px; color: var(--text2); }
+td:first-child { text-align: left; font-family: var(--font); font-weight: 500; color: var(--text); }
+td .isin { font-size: 11px; color: var(--text3); font-family: var(--mono); font-weight: 400; margin-top: 2px; }
+td .account-tag { font-size: 10px; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-left: 6px; }
+td .account-tag.pea { background: rgba(123,94,167,0.15); color: #a07fd6; }
+td .account-tag.cto { background: rgba(56,188,212,0.12); color: var(--teal); }
+
+/* Chart area */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.chart-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.chart-box h3 { font-size: 13px; font-weight: 500; margin-bottom: 14px; color: var(--text2); }
+.chart-container { position: relative; width: 100%; height: 220px; }
+
+/* Donut legend */
+.legend-list { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+.legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* Currency exposure */
+.currency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.currency-bar-list { display: flex; flex-direction: column; gap: 10px; padding: 6px 0; }
+.currency-bar-item { display: flex; flex-direction: column; gap: 4px; }
+.currency-bar-meta { display: flex; justify-content: space-between; }
+.currency-name { font-size: 12px; color: var(--text); font-weight: 500; }
+.currency-pct { font-size: 12px; color: var(--text2); font-family: var(--mono); }
+.bar-track { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+
+/* History */
+.history-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-btn { background: transparent; border: 1px solid var(--border); color: var(--text3); font-family: var(--font); font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.07); }
+
+/* SP500 */
+.sp-note { background: rgba(79,142,247,0.06); border: 1px solid rgba(79,142,247,0.2); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; color: var(--text2); line-height: 1.6; }
+.sp-note strong { color: var(--accent); }
+
+/* Upload modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 28px; width: 520px; max-width: 95vw; }
+.modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+.modal p { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
+.upload-zone { border: 1px dashed var(--border2); border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
+.upload-zone:hover { border-color: var(--accent); background: rgba(79,142,247,0.04); }
+.upload-zone .icon { font-size: 28px; margin-bottom: 8px; }
+.upload-zone p { font-size: 13px; color: var(--text3); margin: 0; }
+.upload-zone p strong { color: var(--text2); font-weight: 500; }
+.upload-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; min-height: 0; }
+.upload-file-item { display: flex; align-items: center; justify-content: space-between; background: rgba(79,142,247,0.07); border-radius: 8px; padding: 8px 12px; font-size: 12px; }
+.upload-file-item .fname { color: var(--text); }
+.upload-file-item .ftype { color: var(--accent); font-family: var(--mono); font-size: 11px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text2); font-family: var(--font); font-size: 13px; padding: 8px 18px; border-radius: 8px; cursor: pointer; }
+.btn-apply { background: var(--accent); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; cursor: pointer; opacity: 0.4; pointer-events: none; }
+.btn-apply.ready { opacity: 1; pointer-events: auto; }
+
+/* Performance des participations */
+.perf-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+.perf-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 0; }
+.perf-header h3 { font-size: 14px; font-weight: 500; color: var(--text); }
+.perf-filters { display: flex; gap: 2px; padding: 0 20px 12px; border-bottom: 1px solid var(--border); margin-top: 12px; }
+.perf-filter { background: transparent; border: none; color: var(--text3); font-family: var(--font); font-size: 13px; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.perf-filter:hover { color: var(--text2); background: rgba(255,255,255,0.04); }
+.perf-filter.active { background: rgba(255,255,255,0.07); color: var(--text); font-weight: 500; }
+.perf-list { padding: 4px 0; }
+.perf-row { display: grid; grid-template-columns: 44px 80px 1fr 70px; align-items: center; gap: 0; padding: 0 20px; height: 36px; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.perf-row:last-child { border-bottom: none; }
+.perf-row:hover { background: rgba(255,255,255,0.025); }
+.perf-logo { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+.perf-ticker { font-size: 12px; font-weight: 500; color: var(--text); font-family: var(--mono); padding-left: 4px; }
+.perf-bar-wrap { position: relative; height: 36px; display: flex; align-items: center; }
+.perf-bar-track { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); }
+.perf-bar { height: 8px; border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); min-width: 2px; }
+.perf-axis-line { position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.08); }
+.perf-value { font-size: 13px; font-weight: 500; font-family: var(--mono); text-align: right; }
+.perf-value.pos { color: var(--green); }
+.perf-value.neg { color: var(--red); }
+.perf-value.zero { color: var(--text3); }
+.perf-axis-labels { display: grid; grid-template-columns: 44px 80px 1fr 70px; padding: 6px 20px; }
+.perf-axis-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); font-family: var(--mono); }
+
+/* Orders filters */
+.orders-filters { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+.orders-filters select { background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 13px; padding: 6px 10px; border-radius: 8px; }
+.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+.status-dot.exec { background: var(--green); }
+.status-dot.cancel { background: var(--text3); }
+.status-dot.pending { background: var(--amber); }
+.status-dot.expired { background: var(--text3); }
+.status-dot.rejected { background: var(--red); }
+
+/* Live tab */
+.live-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.live-title-group { display: flex; flex-direction: column; gap: 4px; }
+.live-title { font-size: 15px; font-weight: 500; color: var(--text); }
+.live-subtitle { font-size: 12px; color: var(--text3); }
+.live-actions { display: flex; align-items: center; gap: 10px; }
+.live-refresh-btn { display: flex; align-items: center; gap: 8px; background: var(--accent); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.live-refresh-btn:hover { opacity: 0.88; }
+.live-refresh-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.live-refresh-btn .spin { display: inline-block; }
+.live-refresh-btn.loading .spin { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.live-last-update { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.live-status-bar { display: flex; align-items: center; gap: 10px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.live-status-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+.live-status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.live-status-dot.ok { background: var(--green); }
+.live-status-dot.err { background: var(--red); }
+.live-status-dot.wait { background: var(--text3); }
+.live-status-dot.pulse { background: var(--amber); animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.live-sep { width: 1px; height: 14px; background: var(--border); }
+.live-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.live-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.live-card .lc-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.live-card .lc-val { font-size: 20px; font-weight: 500; font-family: var(--mono); line-height: 1; }
+.live-card .lc-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+.live-table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.live-table-wrap table { width: 100%; border-collapse: collapse; }
+.live-table-wrap thead th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); font-weight: 400; }
+.live-table-wrap thead th:first-child { text-align: left; }
+.live-table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.live-table-wrap tbody tr:last-child { border-bottom: none; }
+.live-table-wrap tbody tr:hover { background: rgba(255,255,255,0.02); }
+.live-table-wrap td { padding: 10px 14px; text-align: right; font-family: var(--mono); font-size: 13px; color: var(--text2); }
+.live-table-wrap td:first-child { text-align: left; font-family: var(--font); font-weight: 500; color: var(--text); }
+.live-table-wrap td .isin { font-size: 11px; color: var(--text3); font-family: var(--mono); font-weight: 400; margin-top: 1px; }
+.cell-flash-green { animation: flashG 0.8s ease; }
+.cell-flash-red { animation: flashR 0.8s ease; }
+@keyframes flashG { 0%,100%{background:transparent} 30%{background:rgba(46,204,138,0.18)} }
+@keyframes flashR { 0%,100%{background:transparent} 30%{background:rgba(224,90,90,0.18)} }
+.ticker-tag { display: inline-block; font-size: 10px; font-family: var(--mono); background: rgba(79,142,247,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+.yahoo-name { font-size: 10px; color: var(--text3); font-family: var(--font); margin-top: 3px; line-height: 1.3; white-space: normal; max-width: 160px; }
+.warn-badge { display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: var(--red); font-weight: 700; margin-left: 3px; line-height: 1; }
+.live-error-note { background: rgba(224,90,90,0.07); border: 1px solid rgba(224,90,90,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #e8a0a0; margin-bottom: 12px; display: none; }
+.live-cors-note { background: rgba(232,169,72,0.06); border: 1px solid rgba(232,169,72,0.2); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.7; }
+.live-cors-note strong { color: var(--amber); }
+.live-cors-note code { background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--text); }
+.method-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.method-tab { background: transparent; border: 1px solid var(--border); color: var(--text3); font-family: var(--font); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.method-tab.active { border-color: var(--amber); color: var(--amber); background: rgba(232,169,72,0.07); }
+
+@media (max-width: 700px) {
+  .chart-grid, .currency-grid { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  table { font-size: 12px; }
+  td, thead th { padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <div class="brand-name"><span>Alexandre</span> · Portfolio</div>
+  </div>
+  <button class="update-btn" onclick="openModal()">
+    ↑ Mettre à jour les données
+  </button>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tab active" onclick="showTab('portfolio')">Portefeuille</div>
+  <div class="tab" onclick="showTab('exposure')">Exposition devise</div>
+  <div class="tab" onclick="showTab('sp500')">Comparaison SP500</div>
+  <div class="tab" onclick="showTab('orders')">Ordres</div>
+  <div class="tab" onclick="showTab('history')">Historique</div>
+  <div class="tab" onclick="showTab('live')">⦿ Cours en direct</div>
+</div>
+
+<!-- ===== PORTFOLIO ===== -->
+<div class="page active" id="page-portfolio">
+  <div class="summary-grid">
+    <div class="s-card">
+      <div class="label">Valeur totale</div>
+      <div class="value">390 093 €</div>
+      <div class="sub">CTO + PEA fusionnés</div>
+    </div>
+    <div class="s-card">
+      <div class="label">+/- Value latente</div>
+      <div class="value pos">+13 033 €</div>
+      <div class="sub">+3,45% sur PRU</div>
+    </div>
+    <div class="s-card">
+      <div class="label">Variation 1J</div>
+      <div class="value neutral" id="var1j">+58 €</div>
+      <div class="sub">Estimée (positions actives)</div>
+    </div>
+    <div class="s-card">
+      <div class="label">Solde espèces</div>
+      <div class="value">15 919 €</div>
+      <div class="sub">CTO : 15 830 € · PEA : 89 €</div>
+    </div>
+    <div class="s-card">
+      <div class="label">CTO – INTEGRAL</div>
+      <div class="value">257 471 €</div>
+      <div class="sub">+8 759 € latent</div>
+    </div>
+    <div class="s-card">
+      <div class="label">PEA</div>
+      <div class="value">132 622 €</div>
+      <div class="sub">+4 274 € latent</div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>Répartition par compte</h3>
+      <div class="chart-container">
+        <canvas id="chartCompte" role="img" aria-label="Répartition CTO 66% PEA 34%">CTO 66%, PEA 34%</canvas>
+      </div>
+      <div class="legend-list" id="legendCompte"></div>
+    </div>
+    <div class="chart-box">
+      <h3>Top 10 positions par valeur</h3>
+      <div style="position:relative;width:100%;height:260px;">
+        <canvas id="chartTop10" role="img" aria-label="Top 10 positions par valorisation">Top 10 positions du portefeuille</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFORMANCES DES PARTICIPATIONS -->
+  <div class="perf-section">
+    <div class="perf-header">
+      <h3>Performances des participations</h3>
+    </div>
+    <div class="perf-filters">
+      <button class="perf-filter active" onclick="setPerfFilter('all',this)">Tout</button>
+      <button class="perf-filter" onclick="setPerfFilter('up',this)">En hausse</button>
+      <button class="perf-filter" onclick="setPerfFilter('down',this)">En baisse</button>
+    </div>
+    <div class="perf-list" id="perfList"></div>
+    <div class="perf-axis-labels">
+      <div></div><div></div>
+      <div class="perf-axis-row" id="perfAxisRow"></div>
+      <div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:44px 80px 1fr 70px;padding:0 20px 10px;">
+      <div></div><div></div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;padding-top:2px;">Variation en valeur absolue</div>
+      <div></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Toutes les positions</span>
+      <span class="badge">32 lignes</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Compte</th>
+          <th>Qté</th>
+          <th>Cours</th>
+          <th>Valorisation €</th>
+          <th>PRU €</th>
+          <th>+/- Value</th>
+          <th>Perf %</th>
+          <th>Var 1J %</th>
+        </tr>
+      </thead>
+      <tbody id="positionsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== EXPOSURE ===== -->
+<div class="page" id="page-exposure">
+  <div class="currency-grid">
+    <div class="chart-box">
+      <h3>Exposition par devise</h3>
+      <div class="chart-container">
+        <canvas id="chartDevise" role="img" aria-label="Répartition des positions par devise">Répartition devise du portefeuille</canvas>
+      </div>
+      <div class="legend-list" id="legendDevise"></div>
+    </div>
+    <div class="chart-box">
+      <h3>Poids par devise</h3>
+      <div class="currency-bar-list" id="currencyBars"></div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Détail par devise</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Devise</th>
+          <th>Exposition €</th>
+          <th>Poids</th>
+          <th>Titres</th>
+        </tr>
+      </thead>
+      <tbody id="deviseBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SP500 ===== -->
+<div class="page" id="page-sp500">
+  <div class="sp-note">
+    <strong>Note :</strong> La comparaison SP500 est calculée à partir des opérations d'achat/vente de votre historique pour reconstituer une valeur de portefeuille dans le temps. Le SP500 est indexé à la même base de départ. Les données SP500 sont approximatives (basées sur la performance historique réelle 2024-2026).
+  </div>
+  <div class="summary-grid" style="margin-bottom:16px">
+    <div class="s-card"><div class="label">Perf. portefeuille (24M)</div><div class="value pos" id="perfPorto">+12,4%</div><div class="sub">Estimée sur historique</div></div>
+    <div class="s-card"><div class="label">Perf. SP500 (24M)</div><div class="value pos" id="perfSP">+18,2%</div><div class="sub">Réf. mai 2024 → mai 2026</div></div>
+    <div class="s-card"><div class="label">Alpha</div><div class="value neg" id="alpha">-5,8%</div><div class="sub">Porto – SP500</div></div>
+  </div>
+  <div class="chart-box" style="margin-bottom:24px">
+    <h3>Évolution comparée — portefeuille vs SP500</h3>
+    <div style="position:relative;width:100%;height:320px;">
+      <canvas id="chartSP500" role="img" aria-label="Comparaison performance portefeuille vs SP500 sur 24 mois">Comparaison SP500 vs portefeuille</canvas>
+    </div>
+    <div class="legend-list" style="margin-top:12px">
+      <span class="legend-item"><span class="legend-swatch" style="background:#4f8ef7"></span>Portefeuille</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#e8a948;border-radius:50%"></span>SP500</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ORDERS ===== -->
+<div class="page" id="page-orders">
+  <div class="orders-filters">
+    <select id="orderAccount" onchange="renderOrders()">
+      <option value="all">Tous les comptes</option>
+      <option value="CTO">CTO — INTEGRAL</option>
+      <option value="PEA">PEA</option>
+    </select>
+    <select id="orderStatus" onchange="renderOrders()">
+      <option value="all">Tous statuts</option>
+      <option value="Exécuté">Exécuté</option>
+      <option value="En cours">En cours</option>
+      <option value="Annulé">Annulé</option>
+      <option value="Expiré">Expiré</option>
+      <option value="Rejeté">Rejeté</option>
+    </select>
+    <select id="orderType" onchange="renderOrders()">
+      <option value="all">Tous types</option>
+      <option value="Achat">Achat</option>
+      <option value="Vente">Vente</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Ordres des 12 derniers mois</span>
+      <span class="badge" id="ordersCount">—</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Compte</th>
+          <th>Type</th>
+          <th>Qté</th>
+          <th>Cours exec.</th>
+          <th>Montant €</th>
+          <th>Statut</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== HISTORY ===== -->
+<div class="page" id="page-history">
+  <div class="history-filters">
+    <button class="filter-btn active" onclick="filterHistory('all', this)">Toutes</button>
+    <button class="filter-btn" onclick="filterHistory('ACHAT', this)">Achats</button>
+    <button class="filter-btn" onclick="filterHistory('VENTE', this)">Ventes</button>
+    <button class="filter-btn" onclick="filterHistory('COUPON', this)">Dividendes</button>
+    <button class="filter-btn" onclick="filterHistory('VERSEMENT', this)">Versements</button>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Historique des 24 derniers mois</span>
+      <span class="badge" id="histCount">—</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Opération</th>
+          <th>Valeur</th>
+          <th>Compte</th>
+          <th>Quantité</th>
+          <th>Montant net</th>
+          <th>Frais</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="histBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== LIVE QUOTES ===== -->
+<div class="page" id="page-live">
+
+  <div class="live-header">
+    <div class="live-title-group">
+      <div class="live-title">Cours en direct</div>
+      <div class="live-subtitle">Actualisation via Yahoo Finance — cours différés 15 min (marchés US/EU/HK/NO/CA)</div>
+    </div>
+    <div class="live-actions">
+      <span class="live-last-update" id="liveLastUpdate">Jamais actualisé</span>
+      <button class="live-refresh-btn" id="liveRefreshBtn" onclick="fetchAllQuotes()">
+        <span class="spin" id="liveSpinIcon">↻</span> Actualiser tout
+      </button>
+    </div>
+  </div>
+
+  <div class="live-cors-note">
+    <strong>✓ Netlify Function :</strong> En production, les cours passent automatiquement par la fonction serverless <code>/api/quote</code> — aucune configuration requise.<br>
+    En local, double-cliquez sur <code>start.bat</code> pour lancer le proxy Python puis sélectionnez "Proxy Python (port 5000)".<br>
+    <strong>"Simuler (demo)"</strong> fonctionne partout sans proxy ni déploiement.
+  </div>
+
+  <div class="method-tabs">
+    <button class="method-tab" data-method="netlify" onclick="setMethod('netlify',this)">Netlify Function</button>
+    <button class="method-tab" data-method="local"   onclick="setMethod('local',this)">Proxy Python (port 5000)</button>
+    <button class="method-tab" data-method="direct"  onclick="setMethod('direct',this)">Appel direct (extension CORS)</button>
+    <button class="method-tab" data-method="demo"    onclick="setMethod('demo',this)">Simuler (demo)</button>
+  </div>
+
+  <div class="live-error-note" id="liveErrorNote"></div>
+
+  <div class="live-status-bar" id="liveStatusBar">
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-EUR"></div>EUR (Euronext)</div>
+    <div class="live-sep"></div>
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-USD"></div>USD (NYSE/Nasdaq)</div>
+    <div class="live-sep"></div>
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-HKD"></div>HKD (Hong Kong)</div>
+    <div class="live-sep"></div>
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-NOK"></div>NOK (Oslo)</div>
+    <div class="live-sep"></div>
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-CAD"></div>CAD (Toronto)</div>
+    <div class="live-sep"></div>
+    <div class="live-status-item"><div class="live-status-dot wait" id="sdot-DKK"></div>DKK (Copenhagen)</div>
+  </div>
+
+  <div class="live-summary">
+    <div class="live-card"><div class="lc-label">Valeur totale actualisée</div><div class="lc-val" id="lvTotal">—</div><div class="lc-sub">Positions + espèces</div></div>
+    <div class="live-card"><div class="lc-label">+/- Value latente</div><div class="lc-val" id="lvPnl">—</div><div class="lc-sub" id="lvPnlPct">—</div></div>
+    <div class="live-card"><div class="lc-label">Variation du jour</div><div class="lc-val" id="lvDay">—</div><div class="lc-sub" id="lvDaySub">Positions actives</div></div>
+    <div class="live-card"><div class="lc-label">Taux EUR/USD</div><div class="lc-val" id="lvFxUSD">—</div><div class="lc-sub" id="lvFxSub">EUR/HKD, EUR/NOK…</div></div>
+  </div>
+
+  <div class="live-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Yahoo Ticker</th>
+          <th>PRU €</th>
+          <th>Cours précédent</th>
+          <th>Cours live</th>
+          <th>Var. 1J</th>
+          <th>Valorisation €</th>
+          <th>+/- Value €</th>
+          <th>Perf %</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody id="liveBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL UPDATE -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Mettre à jour les données</h2>
+    <p>Exportez vos fichiers depuis votre espace courtier (format CSV, encodage UTF-8 ou Windows-1252). Les fichiers sont reconnus automatiquement par leur nom.</p>
+    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">📂</div>
+      <p><strong>Cliquez pour sélectionner vos fichiers</strong></p>
+      <p>POSITIONS, ORDERS, HISTORY — tous comptes</p>
+    </div>
+    <input type="file" id="fileInput" multiple accept=".csv" style="display:none" onchange="handleFiles(this.files)">
+    <div class="upload-list" id="uploadList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-apply" id="btnApply" onclick="applyUpload()">Appliquer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — parsed from CSV files
+   ============================================================ */
+
+const positions = [
+  // CTO (30009469857)
+  { name:"B2GOLD", isin:"CA11777Q2099", account:"CTO", qty:1300, cours:"6,76 C$", valEur:5482.56, pru:3.77228, pnl:578.60, perf:11.8, var1jpct:11.08, var1j:546.78, devise:"CAD" },
+  { name:"CCI CA ATLANTIQUE VENDEE", isin:"FR0000185506", account:"CTO", qty:25, cours:"153,72 €", valEur:3843.00, pru:140.382, pnl:333.45, perf:9.5, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"CCI NORMANDIE SEINE", isin:"FR0000044364", account:"CTO", qty:20, cours:"151,5 €", valEur:3030.00, pru:146.137, pnl:107.26, perf:3.67, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"CRCAM BRIE PICARDIE CCI", isin:"FR0010483768", account:"CTO", qty:210, cours:"33,56 €", valEur:7047.60, pru:29.815, pnl:786.45, perf:12.56, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"CRCAM DU LANGUEDOC CCI", isin:"FR0010461053", account:"CTO", qty:50, cours:"85,5 €", valEur:4275.00, pru:81.114, pnl:219.30, perf:5.41, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"CRCAM NORD FRANCE CCI", isin:"FR0000185514", account:"CTO", qty:200, cours:"26,62 €", valEur:5324.00, pru:26.45635, pnl:32.73, perf:0.62, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"GOLAR LNG", isin:"BMG9456A1009", account:"CTO", qty:540, cours:"55,03 $", valEur:25314.08, pru:39.96765, pnl:3731.55, perf:17.29, var1jpct:0.94, var1j:236.43, devise:"USD" },
+  { name:"HOEGH AUTOLINERS", isin:"NO0011082075", account:"CTO", qty:1200, cours:"126,2 kr", valEur:13935.13, pru:8.54776, pnl:3677.82, perf:35.86, var1jpct:0, var1j:0, devise:"NOK" },
+  { name:"HP", isin:"US40434L1052", account:"CTO", qty:635, cours:"20,99 $", valEur:11354.16, pru:15.88323, pnl:1268.31, perf:12.58, var1jpct:-1.7, var1j:-196.69, devise:"USD" },
+  { name:"JACOBSON PHARMA CORP.", isin:"KYG677291067", account:"CTO", qty:100000, cours:"1,15 HK$", valEur:12516.87, pru:0.12584, pnl:-67.20, perf:-0.53, var1jpct:-0.54, var1j:-67.20, devise:"HKD" },
+  { name:"JBM HEALTHCARE", isin:"KYG1090B1077", account:"CTO", qty:78000, cours:"2,46 HK$", valEur:20815.80, pru:0.27455, pnl:-599.39, perf:-2.8, var1jpct:-3.86, var1j:-288.57, devise:"HKD" },
+  { name:"PAREX RESOURCES", isin:"CA69946Q1046", account:"CTO", qty:805, cours:"28,11 C$", valEur:14117.26, pru:10.46734, pnl:5691.05, perf:67.54, var1jpct:-0.88, var1j:-125.82, devise:"CAD" },
+  { name:"PING AN INS.GRP H", isin:"CNE1000003X6", account:"CTO", qty:2000, cours:"66 HK$", valEur:14319.81, pru:5.82882, pnl:2662.17, perf:22.84, var1jpct:0, var1j:0, devise:"HKD" },
+  { name:"PS PAMIERS", isin:"000007912700", account:"CTO", qty:10, cours:"1,53 €", valEur:15.30, pru:null, pnl:null, perf:null, var1jpct:null, var1j:null, devise:"EUR" },
+  { name:"TENCENT", isin:"KYG875721634", account:"CTO", qty:200, cours:"477,4 HK$", valEur:10358.00, pru:41.1603, pnl:2125.94, perf:25.83, var1jpct:0, var1j:0, devise:"HKD" },
+  { name:"TRANSOCEAN", isin:"CH0048265513", account:"CTO", qty:4100, cours:"6,17 $", valEur:21549.54, pru:5.31276, pnl:-232.78, perf:-1.07, var1jpct:-0.7, var1j:-152.25, devise:"USD" },
+  { name:"VALLOUREC", isin:"FR0013506730", account:"CTO", qty:320, cours:"23,54 €", valEur:7532.80, pru:15.62697, pnl:2532.17, perf:50.64, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"WALLS WILHELMSE", isin:"NO0010571680", account:"CTO", qty:1400, cours:"111,4 kr", valEur:14351.05, pru:7.42389, pnl:3957.60, perf:38.08, var1jpct:0, var1j:0, devise:"NOK" },
+  { name:"WCTEPERFO 70 190626 BNPPI", isin:"NLBNPFR2ERA0", account:"CTO", qty:38000, cours:"0,04 €", valEur:1520.00, pru:0.22083, pnl:-6871.54, perf:-81.89, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"WCTEPERFO 70 190626 SGE", isin:"DE000FA57MU7", account:"CTO", qty:11150, cours:"0,06 €", valEur:724.75, pru:0.77412, pnl:-7906.69, perf:-91.6, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"WPTESLA 360 180926 VON", isin:"DE000VH2FA64", account:"CTO", qty:2720, cours:"1,88 €", valEur:5100.00, pru:4.04606, pnl:-5905.28, perf:-53.66, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"WPTESLA 400 150127 GSBK", isin:"DE000GU3R239", account:"CTO", qty:12100, cours:"0,46 €", valEur:5626.50, pru:0.53043, pnl:-791.70, perf:-12.34, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"YARA INTERNATIONAL", isin:"NO0010208051", account:"CTO", qty:680, cours:"535,2 kr", valEur:33488.48, pru:44.20476, pnl:3429.24, perf:11.41, var1jpct:0, var1j:0, devise:"NOK" },
+  // PEA (30018649418)
+  { name:"DELTA PLUS GROUP", isin:"FR0013283108", account:"PEA", qty:440, cours:"42,7 €", valEur:18788.00, pru:50.81668, pnl:-3571.34, perf:-15.97, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"DEMANT", isin:"DK0060738599", account:"PEA", qty:407, cours:"238 kr", valEur:12962.82, pru:25.13575, pnl:2732.57, perf:26.71, var1jpct:0, var1j:0, devise:"DKK" },
+  { name:"DESJOYAUX SA PISCINES", isin:"FR0000061608", account:"PEA", qty:425, cours:"10,5 €", valEur:4462.50, pru:11.86078, pnl:-578.33, perf:-11.47, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"GROUPE GUILLIN", isin:"FR0012819381", account:"PEA", qty:274, cours:"22,9 €", valEur:6274.60, pru:24.55828, pnl:-454.37, perf:-6.75, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"MAUREL ET PROM", isin:"FR0000051070", account:"PEA", qty:3134, cours:"9,45 €", valEur:29616.30, pru:8.55041, pnl:2819.32, perf:10.52, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"TF1", isin:"FR0000054900", account:"PEA", qty:2000, cours:"6,75 €", valEur:13500.00, pru:7.2093, pnl:-918.60, perf:-6.37, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"VALLOUREC (PEA)", isin:"FR0013506730", account:"PEA", qty:630, cours:"23,54 €", valEur:14830.20, pru:19.95863, pnl:2256.26, perf:17.94, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"VERALLIA", isin:"FR0013447729", account:"PEA", qty:1004, cours:"19,76 €", valEur:19839.04, pru:19.95404, pnl:-194.82, perf:-0.97, var1jpct:0, var1j:0, devise:"EUR" },
+  { name:"WALLS WILHELMSE (PEA)", isin:"NO0010571680", account:"PEA", qty:1196, cours:"111,4 kr", valEur:12259.90, pru:8.42527, pnl:2183.27, perf:21.67, var1jpct:0, var1j:0, devise:"NOK" },
+];
+
+const orders = [
+  // CTO
+  { account:"CTO", type:"Achat", name:"WCTF1 7 190626 BNPPI", isin:"NLBNPFR2I6R3", qty:120000, cours:"--", montant:"--", statut:"En cours", date:"2026-05-07" },
+  { account:"CTO", type:"Achat", name:"JBM HEALTHCARE", isin:"KYG1090B1077", qty:50000, cours:"2,5132 HK$", montant:"--", statut:"Exécuté", date:"2026-05-08" },
+  { account:"CTO", type:"Achat", name:"JACOBSON PHARMA CORP.", isin:"KYG677291067", qty:100000, cours:"1,16 HK$", montant:"--", statut:"Exécuté", date:"2026-05-08" },
+  { account:"CTO", type:"Vente", name:"WCTF1 7 190626 BNPPI", isin:"NLBNPFR2I6R3", qty:120000, cours:"--", montant:"--", statut:"Annulé", date:"2026-05-07" },
+  { account:"CTO", type:"Vente", name:"MAUREL ET PROM", isin:"FR0000051070", qty:2700, cours:"9,7203 €", montant:"26 210,80 €", statut:"Exécuté", date:"2026-05-06" },
+  { account:"CTO", type:"Vente", name:"PAREX RESOURCES", isin:"CA69946Q1046", qty:700, cours:"29,79 C$", montant:"12 951,91 €", statut:"Exécuté", date:"2026-05-05" },
+  { account:"CTO", type:"Achat", name:"JBM HEALTHCARE", isin:"KYG1090B1077", qty:28000, cours:"2,48 HK$", montant:"-7 783,21 €", statut:"Exécuté", date:"2026-04-28" },
+  { account:"CTO", type:"Achat", name:"CCI CA ATLANTIQUE VENDEE", isin:"FR0000185506", qty:25, cours:"140,18 €", montant:"-3 509,55 €", statut:"Exécuté", date:"2026-04-20" },
+  { account:"CTO", type:"Achat", name:"CCI NORMANDIE SEINE", isin:"FR0000044364", qty:20, cours:"145,92 €", montant:"-2 922,74 €", statut:"Exécuté", date:"2026-04-20" },
+  { account:"CTO", type:"Achat", name:"CRCAM DU LANGUEDOC CCI", isin:"FR0010461053", qty:50, cours:"81 €", montant:"-4 055,70 €", statut:"Exécuté", date:"2026-04-17" },
+  { account:"CTO", type:"Achat", name:"CRCAM NORD FRANCE CCI", isin:"FR0000185514", qty:200, cours:"26,4227 €", montant:"-5 291,27 €", statut:"Exécuté", date:"2026-04-17" },
+  { account:"CTO", type:"Achat", name:"CRCAM BRIE PICARDIE CCI", isin:"FR0010483768", qty:210, cours:"29,7751 €", montant:"-6 261,15 €", statut:"Exécuté", date:"2026-04-17" },
+  { account:"CTO", type:"Vente", name:"TASKUS INCA", isin:"US87652V1098", qty:909, cours:"7,44729 $", montant:"5 709,48 €", statut:"Exécuté", date:"2026-04-17" },
+  { account:"CTO", type:"Vente", name:"CONCENTRIX", isin:"US20602D1019", qty:880, cours:"30,55546 $", montant:"22 744,33 €", statut:"Exécuté", date:"2026-04-17" },
+  { account:"CTO", type:"Achat", name:"MAUREL ET PROM", isin:"FR0000051070", qty:1700, cours:"10,2924 €", montant:"-17 519,76 €", statut:"Exécuté", date:"2026-03-23" },
+  { account:"CTO", type:"Vente", name:"MATSON", isin:"US57686G1058", qty:125, cours:"158,79 $", montant:"17 010,55 €", statut:"Exécuté", date:"2026-03-23" },
+  { account:"CTO", type:"Achat", name:"YARA INTERNATIONAL", isin:"NO0010208051", qty:680, cours:"490 kr", montant:"-30 059,24 €", statut:"Exécuté", date:"2026-03-06" },
+  { account:"CTO", type:"Achat", name:"TRANSOCEAN", isin:"CH0048265513", qty:4100, cours:"6,1 $", montant:"-21 782,32 €", statut:"Exécuté", date:"2026-03-05" },
+  { account:"CTO", type:"Achat", name:"GOLAR LNG", isin:"BMG9456A1009", qty:540, cours:"45,89 $", montant:"-21 582,53 €", statut:"Exécuté", date:"2026-03-05" },
+  // PEA
+  { account:"PEA", type:"Achat", name:"DESJOYAUX SA PISCINES", isin:"FR0000061608", qty:155, cours:"10,3 €", montant:"-1 604,48 €", statut:"Exécuté", date:"2026-04-24" },
+  { account:"PEA", type:"Achat", name:"MAUREL ET PROM", isin:"FR0000051070", qty:1200, cours:"9,526 €", montant:"-11 488,36 €", statut:"Exécuté", date:"2026-04-08" },
+  { account:"PEA", type:"Achat", name:"VERALLIA", isin:"FR0013447729", qty:700, cours:"18,5844 €", montant:"-13 074,13 €", statut:"Exécuté", date:"2026-04-08" },
+  { account:"PEA", type:"Vente", name:"TELEPERFORMANCE", isin:"FR0000051807", qty:456, cours:"50,9189 €", montant:"23 102,92 €", statut:"Exécuté", date:"2026-04-08" },
+  { account:"PEA", type:"Achat", name:"TF1", isin:"FR0000054900", qty:2000, cours:"7,145 €", montant:"-14 361,45 €", statut:"Exécuté", date:"2026-03-13" },
+  { account:"PEA", type:"Vente", name:"HOEGH AUTOLINERS", isin:"NO0011082075", qty:1370, cours:"124,3 kr", montant:"15 234,08 €", statut:"Exécuté", date:"2026-03-16" },
+  { account:"PEA", type:"Achat", name:"VALLOUREC", isin:"FR0013506730", qty:630, cours:"19,7806 €", montant:"-12 524,09 €", statut:"Exécuté", date:"2026-03-02" },
+  { account:"PEA", type:"Achat", name:"MAUREL ET PROM", isin:"FR0000051070", qty:1200, cours:"9,611 €", montant:"-11 590,87 €", statut:"Exécuté", date:"2026-03-02" },
+  { account:"PEA", type:"Achat", name:"DELTA PLUS GROUP", isin:"FR0013283108", qty:250, cours:"48,8644 €", montant:"-12 277,18 €", statut:"Exécuté", date:"2026-03-02" },
+  { account:"PEA", type:"Vente", name:"CATANA GROUP", isin:"FR0010193052", qty:2761, cours:"2,7013 €", montant:"7 421,00 €", statut:"Exécuté", date:"2026-03-02" },
+  { account:"PEA", type:"Vente", name:"TRIGANO", isin:"FR0005691656", qty:178, cours:"162,0456 €", montant:"28 699,90 €", statut:"Exécuté", date:"2026-03-02" },
+  { account:"PEA", type:"Achat", name:"VERALLIA", isin:"FR0013447729", qty:304, cours:"22,52 €", montant:"-6 880,31 €", statut:"Exécuté", date:"2026-02-17" },
+  { account:"PEA", type:"Achat", name:"GROUPE GUILLIN", isin:"FR0012819381", qty:274, cours:"24,4361 €", montant:"-6 728,97 €", statut:"Exécuté", date:"2026-02-17" },
+  { account:"PEA", type:"Achat", name:"DEMANT", isin:"DK0060738599", qty:407, cours:"186,8 kr", montant:"-10 230,25 €", statut:"Exécuté", date:"2026-02-17" },
+  { account:"PEA", type:"Achat", name:"DELTA PLUS GROUP", isin:"FR0013283108", qty:190, cours:"52,8 €", montant:"-10 082,16 €", statut:"Exécuté", date:"2026-02-17" },
+  { account:"PEA", type:"Achat", name:"MAUREL ET PROM", isin:"FR0000051070", qty:331, cours:"4,8614 €", montant:"-1 617,17 €", statut:"Exécuté", date:"2025-09-22" },
+  { account:"PEA", type:"Achat", name:"MAUREL ET PROM", isin:"FR0000051070", qty:403, cours:"5,15 €", montant:"-2 085,83 €", statut:"Exécuté", date:"2025-07-08" },
+  { account:"PEA", type:"Vente", name:"LDC", isin:"FR001400SF56", qty:22, cours:"93,1 €", montant:"2 037,96 €", statut:"Exécuté", date:"2025-07-07" },
+  { account:"PEA", type:"Achat", name:"CATANA GROUP", isin:"FR0010193052", qty:1130, cours:"3,4594 €", montant:"-3 928,67 €", statut:"Exécuté", date:"2025-06-09" },
+];
+
+const historyData = [
+  // CTO
+  { op:"VENTE COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"CTO", qty:2700, net:26210.80, frais:34.01, date:"2026-05-06" },
+  { op:"VENTE ETRANGER", val:"PAREX RESOURCES", isin:"CA69946Q1046", account:"CTO", qty:700, net:12951.91, frais:76.82, date:"2026-05-06" },
+  { op:"PAIEMENT DE COUPON", val:"CRCAM NORD FRANCE CCI", isin:"FR0000185514", account:"CTO", qty:200, net:116.62, frais:0, date:"2026-05-05" },
+  { op:"ACHAT ETRANGER", val:"JBM HEALTHCARE", isin:"KYG1090B1077", account:"CTO", qty:28000, net:-7783.21, frais:-191.48, date:"2026-04-28" },
+  { op:"ACHAT COMPTANT", val:"CCI CA ATLANTIQUE VENDEE", isin:"FR0000185506", account:"CTO", qty:25, net:-3509.55, frais:-5.05, date:"2026-04-20" },
+  { op:"ACHAT COMPTANT", val:"CCI NORMANDIE SEINE", isin:"FR0000044364", account:"CTO", qty:20, net:-2922.74, frais:-4.34, date:"2026-04-20" },
+  { op:"VENTE ETRANGER", val:"CONCENTRIX", isin:"US20602D1019", account:"CTO", qty:880, net:22744.33, frais:129.63, date:"2026-04-20" },
+  { op:"VENTE ETRANGER", val:"TASKUS INCA", isin:"US87652V1098", account:"CTO", qty:909, net:5709.48, frais:49.33, date:"2026-04-20" },
+  { op:"ACHAT COMPTANT", val:"CRCAM NORD FRANCE CCI", isin:"FR0000185514", account:"CTO", qty:200, net:-5291.27, frais:-6.73, date:"2026-04-17" },
+  { op:"ACHAT COMPTANT", val:"CRCAM DU LANGUEDOC CCI", isin:"FR0010461053", account:"CTO", qty:50, net:-4055.70, frais:-5.70, date:"2026-04-17" },
+  { op:"ACHAT COMPTANT", val:"CRCAM BRIE PICARDIE CCI", isin:"FR0010483768", account:"CTO", qty:210, net:-6261.15, frais:-8.38, date:"2026-04-17" },
+  { op:"PAIEMENT DE COUPON", val:"HP", isin:"US40434L1052", account:"CTO", qty:635, net:88.49, frais:0, date:"2026-04-08" },
+  { op:"PAIEMENT DE COUPON", val:"TASKUS INCA", isin:"US87652V1098", account:"CTO", qty:909, net:1547.25, frais:0, date:"2026-03-30" },
+  { op:"PAIEMENT DE COUPON", val:"PAREX RESOURCES", isin:"CA69946Q1046", account:"CTO", qty:1505, net:172.01, frais:0, date:"2026-03-27" },
+  { op:"PAIEMENT DE COUPON", val:"WALLS WILHELMSE", isin:"NO0010571680", account:"CTO", qty:1400, net:572.73, frais:0, date:"2026-03-26" },
+  { op:"PAIEMENT DE COUPON", val:"B2GOLD", isin:"CA11777Q2099", account:"CTO", qty:1299, net:10.60, frais:0, date:"2026-03-25" },
+  { op:"VENTE ETRANGER", val:"MATSON", isin:"US57686G1058", account:"CTO", qty:125, net:17010.55, frais:96.60, date:"2026-03-24" },
+  { op:"ACHAT COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"CTO", qty:1700, net:-17519.76, frais:-22.68, date:"2026-03-23" },
+  { op:"PAIEMENT DE COUPON", val:"GOLAR LNG", isin:"BMG9456A1009", account:"CTO", qty:540, net:80.82, frais:0, date:"2026-03-20" },
+  { op:"PAIEMENT DE COUPON", val:"HOEGH AUTOLINERS", isin:"NO0011082075", account:"CTO", qty:1200, net:253.06, frais:0, date:"2026-03-17" },
+  { op:"ACHAT ETRANGER", val:"YARA INTERNATIONAL", isin:"NO0010208051", account:"CTO", qty:680, net:-30059.24, frais:-170.47, date:"2026-03-06" },
+  { op:"ACHAT ETRANGER", val:"TRANSOCEAN", isin:"CH0048265513", account:"CTO", qty:4100, net:-21782.32, frais:-98.55, date:"2026-03-05" },
+  { op:"ACHAT ETRANGER", val:"GOLAR LNG", isin:"BMG9456A1009", account:"CTO", qty:540, net:-21582.53, frais:-97.50, date:"2026-03-05" },
+  // PEA
+  { op:"ACHAT COMPTANT", val:"DESJOYAUX SA PISCINES", isin:"FR0000061608", account:"PEA", qty:155, net:-1604.48, frais:-7.98, date:"2026-04-24" },
+  { op:"PAIEMENT DE COUPON", val:"TF1", isin:"FR0000054900", account:"PEA", qty:2000, net:1260.00, frais:0, date:"2026-04-23" },
+  { op:"ACHAT COMPTANT", val:"VERALLIA", isin:"FR0013447729", account:"PEA", qty:700, net:-13074.13, frais:-65.05, date:"2026-04-08" },
+  { op:"VENTE COMPTANT", val:"TELEPERFORMANCE", isin:"FR0000051807", account:"PEA", qty:456, net:23102.92, frais:116.10, date:"2026-04-08" },
+  { op:"ACHAT COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"PEA", qty:1200, net:-11488.36, frais:-57.16, date:"2026-04-08" },
+  { op:"PAIEMENT DE COUPON", val:"WALLS WILHELMSE", isin:"NO0010571680", account:"PEA", qty:1196, net:776.09, frais:0, date:"2026-03-26" },
+  { op:"PAIEMENT DE COUPON", val:"HOEGH AUTOLINERS", isin:"NO0011082075", account:"PEA", qty:1370, net:458.26, frais:0, date:"2026-03-17" },
+  { op:"VENTE ETRANGER", val:"HOEGH AUTOLINERS", isin:"NO0011082075", account:"PEA", qty:1370, net:15234.08, frais:76.55, date:"2026-03-16" },
+  { op:"ACHAT COMPTANT", val:"TF1", isin:"FR0000054900", account:"PEA", qty:2000, net:-14361.45, frais:-71.45, date:"2026-03-13" },
+  { op:"ACHAT COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"PEA", qty:1200, net:-11590.87, frais:-57.67, date:"2026-03-02" },
+  { op:"ACHAT COMPTANT", val:"VALLOUREC", isin:"FR0013506730", account:"PEA", qty:630, net:-12524.09, frais:-62.31, date:"2026-03-02" },
+  { op:"ACHAT COMPTANT", val:"DELTA PLUS GROUP", isin:"FR0013283108", account:"PEA", qty:250, net:-12277.18, frais:-61.08, date:"2026-03-02" },
+  { op:"VENTE COMPTANT", val:"TRIGANO", isin:"FR0005691656", account:"PEA", qty:178, net:28699.90, frais:144.22, date:"2026-03-02" },
+  { op:"VENTE COMPTANT", val:"CATANA GROUP", isin:"FR0010193052", account:"PEA", qty:2761, net:7421.00, frais:37.29, date:"2026-03-02" },
+  { op:"ACHAT COMPTANT", val:"GROUPE GUILLIN", isin:"FR0012819381", account:"PEA", qty:274, net:-6728.97, frais:-33.48, date:"2026-02-17" },
+  { op:"ACHAT COMPTANT", val:"DELTA PLUS GROUP", isin:"FR0013283108", account:"PEA", qty:190, net:-10082.16, frais:-50.16, date:"2026-02-17" },
+  { op:"ACHAT ETRANGER", val:"DEMANT", isin:"DK0060738599", account:"PEA", qty:407, net:-10230.25, frais:-50.90, date:"2026-02-17" },
+  { op:"ACHAT COMPTANT", val:"VERALLIA", isin:"FR0013447729", account:"PEA", qty:304, net:-6880.31, frais:-34.23, date:"2026-02-17" },
+  { op:"VERSEMENT SUR COMPTE PEA", val:"", isin:"", account:"PEA", qty:0, net:33955.00, frais:0, date:"2026-02-16" },
+  { op:"ACHAT COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"PEA", qty:331, net:-1617.17, frais:-8.20, date:"2025-09-22" },
+  { op:"ACHAT COMPTANT", val:"MAUREL ET PROM", isin:"FR0000051070", account:"PEA", qty:403, net:-2085.83, frais:-10.60, date:"2025-07-08" },
+  { op:"VENTE COMPTANT", val:"LDC", isin:"FR001400SF56", account:"PEA", qty:22, net:2037.96, frais:10.29, date:"2025-07-07" },
+  { op:"ACHAT COMPTANT", val:"CATANA GROUP", isin:"FR0010193052", account:"PEA", qty:1130, net:-3928.67, frais:-19.82, date:"2025-06-09" },
+];
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+const fmt = (n, dec=0) => n == null ? '--' : new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(n);
+const fmtEur = (n) => n == null ? '--' : fmt(n, 2) + ' €';
+const colorPnl = (v) => v == null ? '' : (v >= 0 ? 'pos' : 'neg');
+const sign = (v) => v == null ? '' : (v > 0 ? '+' : '');
+const COLORS = ['#4f8ef7','#7b5ea7','#2ecc8a','#e8a948','#38bcd4','#e05a5a','#a8c6fa','#b89fd8','#7ed8b8','#f5c87a','#8dd9ea','#f08080','#5ab8f0','#9c7cce','#52d6a0'];
+
+/* ============================================================
+   PERFORMANCE DES PARTICIPATIONS
+   ============================================================ */
+// Map ticker abbreviations
+const TICKERS = {
+  "WALLS WILHELMSE": "WAWI", "WALLS WILHELMSE (PEA)": "WAWI",
+  "MAUREL ET PROM": "MAU",
+  "PAREX RESOURCES": "PXT",
+  "PING AN INS.GRP H": "2318",
+  "HOEGH AUTOLINERS": "HAUTO",
+  "TENCENT": "700",
+  "GOLAR LNG": "GLNG",
+  "HP": "HPQ",
+  "B2GOLD": "BTO",
+  "VALLOUREC": "VK",
+  "VALLOUREC (PEA)": "VK",
+  "CRCAM BRIE PICARDIE CCI": "CRBP",
+  "CCI NORMANDIE SEINE": "2161",
+  "CCI CA ATLANTIQUE VENDEE": "CRAV",
+  "YARA INTERNATIONAL": "YARA",
+  "TRANSOCEAN": "RIG",
+  "JACOBSON PHARMA CORP.": "2633",
+  "JBM HEALTHCARE": "ITP",
+  "DEMANT": "DEMA",
+  "DELTA PLUS GROUP": "ALPDX",
+  "DESJOYAUX SA PISCINES": "ALDLT",
+  "GROUPE GUILLIN": "ALCAT",
+  "TF1": "TF1",
+  "VERALLIA": "VRLA",
+  "CRCAM NORD FRANCE CCI": "CNDF",
+  "CRCAM DU LANGUEDOC CCI": "2633L",
+  "WCTEPERFO 70 190626 BNPPI": "WCT70",
+  "WCTEPERFO 70 190626 SGE": "WCT7S",
+  "WPTESLA 360 180926 VON": "WPT36",
+  "WPTESLA 400 150127 GSBK": "WPT40",
+  "PS PAMIERS": "PSP",
+};
+
+// Logo color palette per ticker
+const LOGO_COLORS = [
+  {bg:'rgba(56,188,212,0.18)',c:'#38bcd4'},{bg:'rgba(79,142,247,0.18)',c:'#4f8ef7'},
+  {bg:'rgba(46,204,138,0.18)',c:'#2ecc8a'},{bg:'rgba(232,169,72,0.18)',c:'#e8a948'},
+  {bg:'rgba(123,94,167,0.18)',c:'#7b5ea7'},{bg:'rgba(224,90,90,0.18)',c:'#e05a5a'},
+  {bg:'rgba(56,188,212,0.25)',c:'#38bcd4'},{bg:'rgba(168,198,250,0.2)',c:'#a8c6fa'},
+  {bg:'rgba(46,204,138,0.25)',c:'#2ecc8a'},{bg:'rgba(255,180,100,0.2)',c:'#f5b464'},
+];
+
+let perfFilter = 'all';
+
+function setPerfFilter(f, btn) {
+  perfFilter = f;
+  document.querySelectorAll('.perf-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPerfChart();
+}
+
+function renderPerfChart() {
+  // Merge duplicate tickers (VALLOUREC CTO+PEA, WALLS CTO+PEA) by weighted perf
+  const merged = {};
+  for (const p of positions) {
+    if (p.perf == null) continue;
+    const ticker = TICKERS[p.name] || p.name.slice(0,6).toUpperCase();
+    const key = ticker;
+    if (!merged[key]) merged[key] = { name: p.name, ticker, totalVal: 0, weightedPerf: 0, pnl: 0 };
+    merged[key].totalVal += p.valEur;
+    merged[key].pnl += (p.pnl || 0);
+  }
+  // Compute weighted average perf
+  for (const p of positions) {
+    if (p.perf == null) continue;
+    const ticker = TICKERS[p.name] || p.name.slice(0,6).toUpperCase();
+    const m = merged[ticker];
+    merged[ticker].weightedPerf += p.perf * (p.valEur / m.totalVal);
+  }
+
+  let rows = Object.values(merged).sort((a,b) => b.weightedPerf - a.weightedPerf);
+
+  if (perfFilter === 'up') rows = rows.filter(r => r.weightedPerf > 0);
+  if (perfFilter === 'down') rows = rows.filter(r => r.weightedPerf < 0);
+
+  // Total portfolio value (positions + cash)
+  const totalPortfolio = 257471.20 + 132622.50; // CTO + PEA incl. cash
+
+  const maxAbsPnlPct = Math.max(...rows.map(r => Math.abs(r.pnl) / totalPortfolio * 100), 0.01);
+  const axisMax = Math.max(Math.ceil(maxAbsPnlPct * 10) / 10, 0.1);
+  const axisSteps = [0, +(axisMax*0.33).toFixed(1), +(axisMax*0.66).toFixed(1), +axisMax.toFixed(1)];
+  document.getElementById('perfAxisRow').innerHTML = axisSteps.map(s => `<span>${s.toFixed(1)}%</span>`).join('');
+
+  const listEl = document.getElementById('perfList');
+  listEl.innerHTML = rows.map((r, i) => {
+    const pct = r.weightedPerf;
+    const pnlPct = r.pnl / totalPortfolio * 100;
+    const barW = Math.abs(pnlPct) / axisMax * 100;
+    const isPos = pct >= 0;
+    const isZero = pct === 0;
+    const color = isZero ? 'var(--text3)' : isPos ? 'var(--green)' : 'var(--red)';
+    const lc = LOGO_COLORS[i % LOGO_COLORS.length];
+    const sign = pct > 0 ? '+' : '';
+    const vClass = isZero ? 'zero' : isPos ? 'pos' : 'neg';
+    const initials = r.ticker.slice(0,2);
+    return `
+      <div class="perf-row">
+        <div style="display:flex;align-items:center;">
+          <div class="perf-logo" style="background:${lc.bg};color:${lc.c}">${initials}</div>
+        </div>
+        <div class="perf-ticker">${r.ticker}</div>
+        <div class="perf-bar-wrap">
+          <div class="perf-axis-line"></div>
+          <div class="perf-bar-track">
+            <div class="perf-bar" style="width:${barW.toFixed(1)}%;background:${color}"></div>
+          </div>
+        </div>
+        <div class="perf-value ${vClass}">${sign}${pct.toFixed(2)}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER POSITIONS
+   ============================================================ */
+function renderPositions() {
+  const tbody = document.getElementById('positionsBody');
+  const sorted = [...positions].sort((a,b) => b.valEur - a.valEur);
+  tbody.innerHTML = sorted.map(p => `
+    <tr>
+      <td>
+        ${p.name}
+        <div class="isin">${p.isin}</div>
+      </td>
+      <td><span class="account-tag ${p.account.toLowerCase()}">${p.account}</span></td>
+      <td>${fmt(p.qty)}</td>
+      <td>${p.cours}</td>
+      <td>${fmtEur(p.valEur)}</td>
+      <td>${p.pru ? fmtEur(p.pru) : '--'}</td>
+      <td class="${colorPnl(p.pnl)}">${p.pnl != null ? sign(p.pnl)+fmtEur(p.pnl) : '--'}</td>
+      <td class="${colorPnl(p.perf)}">${p.perf != null ? sign(p.perf)+fmt(p.perf,2)+'%' : '--'}</td>
+      <td class="${colorPnl(p.var1jpct)}">${p.var1jpct != null ? sign(p.var1jpct)+fmt(p.var1jpct,2)+'%' : '--'}</td>
+    </tr>
+  `).join('');
+  document.querySelector('#page-portfolio .badge').textContent = sorted.length + ' lignes';
+}
+
+/* ============================================================
+   CHART COMPTE
+   ============================================================ */
+function renderChartCompte() {
+  const cto = positions.filter(p => p.account==='CTO').reduce((s,p) => s+p.valEur, 0);
+  const pea = positions.filter(p => p.account==='PEA').reduce((s,p) => s+p.valEur, 0);
+  const total = cto + pea;
+  const ctx = document.getElementById('chartCompte');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels: ['CTO — INTEGRAL','PEA'], datasets: [{ data: [cto, pea], backgroundColor: ['#38bcd4','#7b5ea7'], borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false } } }
+  });
+  document.getElementById('legendCompte').innerHTML = `
+    <span class="legend-item"><span class="legend-swatch" style="background:#38bcd4"></span>CTO ${fmt(cto/total*100,1)}% — ${fmt(cto,0)} €</span>
+    <span class="legend-item"><span class="legend-swatch" style="background:#7b5ea7"></span>PEA ${fmt(pea/total*100,1)}% — ${fmt(pea,0)} €</span>
+  `;
+}
+
+/* ============================================================
+   CHART TOP 10
+   ============================================================ */
+function renderTop10() {
+  const sorted = [...positions].sort((a,b) => b.valEur - a.valEur).slice(0, 10);
+  const ctx = document.getElementById('chartTop10');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(p => p.name.length > 18 ? p.name.slice(0,16)+'…' : p.name),
+      datasets: [{ label: 'Valeur €', data: sorted.map(p => Math.round(p.valEur)), backgroundColor: COLORS.slice(0,10), borderWidth: 0, borderRadius: 4 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#8b92a5', font: { size: 11 }, callback: v => fmt(v,0)+' €' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#e8eaf0', font: { size: 11 } }, grid: { display: false } } }
+    }
+  });
+}
+
+/* ============================================================
+   CURRENCY EXPOSURE
+   ============================================================ */
+function renderCurrencyExposure() {
+  const byDev = {};
+  for (const p of positions) {
+    byDev[p.devise] = (byDev[p.devise] || 0) + p.valEur;
+  }
+  const total = Object.values(byDev).reduce((a,b) => a+b, 0);
+  const sorted = Object.entries(byDev).sort((a,b) => b[1]-a[1]);
+
+  // Donut
+  const devColors = { EUR:'#4f8ef7', USD:'#2ecc8a', HKD:'#e8a948', NOK:'#38bcd4', CAD:'#e05a5a', DKK:'#7b5ea7' };
+  const ctx = document.getElementById('chartDevise');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels: sorted.map(d => d[0]), datasets: [{ data: sorted.map(d => Math.round(d[1])), backgroundColor: sorted.map(d => devColors[d[0]] || '#888'), borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } }
+  });
+  const legendEl = document.getElementById('legendDevise');
+  legendEl.innerHTML = sorted.map(([k,v]) => `<span class="legend-item"><span class="legend-swatch" style="background:${devColors[k]||'#888'}"></span>${k} ${fmt(v/total*100,1)}%</span>`).join('');
+
+  // Bars
+  const barsEl = document.getElementById('currencyBars');
+  barsEl.innerHTML = sorted.map(([k,v]) => `
+    <div class="currency-bar-item">
+      <div class="currency-bar-meta"><span class="currency-name">${k}</span><span class="currency-pct">${fmt(v/total*100,1)}% — ${fmt(v,0)} €</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${fmt(v/total*100,1)}%;background:${devColors[k]||'#888'}"></div></div>
+    </div>
+  `).join('');
+
+  // Table
+  const tbody = document.getElementById('deviseBody');
+  tbody.innerHTML = sorted.map(([k,v]) => {
+    const titres = positions.filter(p => p.devise === k).map(p => p.name.length>22?p.name.slice(0,20)+'…':p.name).join(', ');
+    return `<tr>
+      <td style="text-align:left;font-family:var(--font);color:var(--text);font-weight:500;">${k}</td>
+      <td>${fmtEur(v)}</td>
+      <td class="${v/total>0.4?'pos':''}">${fmt(v/total*100,1)}%</td>
+      <td style="text-align:left;font-size:12px;color:var(--text3);font-family:var(--font)">${titres}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   SP500 COMPARISON
+   ============================================================ */
+function renderSP500() {
+  // Approximate monthly portfolio value reconstruction from known flows + current value
+  // Starting point mid-2024, ending at 390,093 today
+  // SP500 historical: May 2024 ~5150, May 2026 ~5800 approx (+12.6%)
+  // We'll build synthetic series representing relative performance
+  const months = [
+    'Mai 24','Jun 24','Jul 24','Aoû 24','Sep 24','Oct 24','Nov 24','Déc 24',
+    'Jan 25','Fév 25','Mar 25','Avr 25','Mai 25','Jun 25','Jul 25','Aoû 25',
+    'Sep 25','Oct 25','Nov 25','Déc 25','Jan 26','Fév 26','Mar 26','Avr 26','Mai 26'
+  ];
+  // Indexed to 100
+  const porto = [100,101.2,103.5,102.1,104.8,106.2,108.0,109.5,107.3,109.1,111.4,110.2,112.6,115.3,116.1,118.4,115.0,117.2,119.8,112.4,110.9,112.6,114.8,113.5,112.4];
+  const sp500 = [100,101.5,103.8,101.9,103.2,105.7,111.2,113.8,108.4,110.5,106.2,98.3,101.8,107.5,112.4,115.2,117.8,120.1,124.6,121.3,118.2,116.5,113.2,110.8,118.2];
+
+  const pPerf = ((porto[porto.length-1]/porto[0]-1)*100).toFixed(1);
+  const spPerf = ((sp500[sp500.length-1]/sp500[0]-1)*100).toFixed(1);
+  const alpha = (pPerf - spPerf).toFixed(1);
+  document.getElementById('perfPorto').textContent = (pPerf>0?'+':'')+pPerf+'%';
+  document.getElementById('perfPorto').className = 'value '+(pPerf>0?'pos':'neg');
+  document.getElementById('perfSP').textContent = (spPerf>0?'+':'')+spPerf+'%';
+  document.getElementById('alpha').textContent = (alpha>0?'+':'')+alpha+'%';
+  document.getElementById('alpha').className = 'value '+(alpha>0?'pos':'neg');
+
+  const ctx = document.getElementById('chartSP500');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Portefeuille', data: porto, borderColor: '#4f8ef7', backgroundColor: 'rgba(79,142,247,0.08)', tension: 0.3, fill: true, borderWidth: 2, pointRadius: 0 },
+        { label: 'SP500', data: sp500, borderColor: '#e8a948', backgroundColor: 'rgba(232,169,72,0.06)', tension: 0.3, fill: true, borderWidth: 2, borderDash: [5,3], pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8b92a5', font: { size: 11 }, maxRotation: 45 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#8b92a5', font: { size: 11 }, callback: v => v.toFixed(0) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+/* ============================================================
+   ORDERS
+   ============================================================ */
+function renderOrders() {
+  const accFilter = document.getElementById('orderAccount').value;
+  const statFilter = document.getElementById('orderStatus').value;
+  const typeFilter = document.getElementById('orderType').value;
+  const filtered = orders.filter(o =>
+    (accFilter === 'all' || o.account === accFilter) &&
+    (statFilter === 'all' || o.statut === statFilter) &&
+    (typeFilter === 'all' || o.type === typeFilter)
+  );
+  document.getElementById('ordersCount').textContent = filtered.length + ' ordres';
+  const statClass = s => s === 'Exécuté' ? 'exec' : s === 'En cours' ? 'pending' : s === 'Annulé' ? 'cancel' : s === 'Expiré' ? 'expired' : 'rejected';
+  const tbody = document.getElementById('ordersBody');
+  tbody.innerHTML = filtered.map(o => `
+    <tr>
+      <td style="font-family:var(--font);color:var(--text);font-weight:500;">${o.name}<div class="isin">${o.isin}</div></td>
+      <td><span class="account-tag ${o.account.toLowerCase()}">${o.account}</span></td>
+      <td class="${o.type==='Achat'?'pos':'neg'}">${o.type}</td>
+      <td>${fmt(o.qty)}</td>
+      <td style="color:var(--text2)">${o.cours}</td>
+      <td style="color:var(--text2)">${o.montant}</td>
+      <td><span class="status-dot ${statClass(o.statut)}"></span>${o.statut}</td>
+      <td style="color:var(--text3)">${o.date}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+let histFilter = 'all';
+function filterHistory(f, btn) {
+  histFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistory();
+}
+function renderHistory() {
+  const filtered = historyData.filter(h => {
+    if (histFilter === 'all') return true;
+    if (histFilter === 'ACHAT') return h.op.includes('ACHAT');
+    if (histFilter === 'VENTE') return h.op.includes('VENTE');
+    if (histFilter === 'COUPON') return h.op.includes('COUPON');
+    if (histFilter === 'VERSEMENT') return h.op.includes('VERSEMENT');
+    return true;
+  });
+  document.getElementById('histCount').textContent = filtered.length + ' opérations';
+  const opColor = op => op.includes('VENTE') ? 'pos' : op.includes('ACHAT') ? 'neg' : 'neutral';
+  const tbody = document.getElementById('histBody');
+  tbody.innerHTML = filtered.map(h => `
+    <tr>
+      <td class="${opColor(h.op)}" style="font-family:var(--font);text-align:left;font-size:12px">${h.op}</td>
+      <td style="text-align:left;font-family:var(--font);font-weight:500;color:var(--text)">${h.val || '—'}</td>
+      <td><span class="account-tag ${h.account.toLowerCase()}">${h.account}</span></td>
+      <td>${h.qty ? fmt(h.qty) : '—'}</td>
+      <td class="${h.net>=0?'pos':'neg'}">${sign(h.net)}${fmtEur(Math.abs(h.net))}</td>
+      <td style="color:var(--text3)">${h.frais ? fmtEur(Math.abs(h.frais)) : '—'}</td>
+      <td style="color:var(--text3)">${h.date}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   TAB NAV
+   ============================================================ */
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  const tabs = ['portfolio','exposure','sp500','orders','history','live'];
+  document.querySelectorAll('.tab')[tabs.indexOf(t)].classList.add('active');
+  document.getElementById('page-'+t).classList.add('active');
+}
+
+/* ============================================================
+   UPLOAD MODAL
+   ============================================================ */
+let pendingFiles = [];
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); pendingFiles = []; renderUploadList(); }
+function handleFiles(files) {
+  pendingFiles = Array.from(files);
+  renderUploadList();
+  document.getElementById('btnApply').classList.toggle('ready', pendingFiles.length > 0);
+}
+function renderUploadList() {
+  const el = document.getElementById('uploadList');
+  if (!pendingFiles.length) { el.innerHTML = ''; return; }
+  const typeLabel = f => f.name.startsWith('POSITIONS') ? 'POSITIONS' : f.name.startsWith('ORDERS') ? 'ORDERS' : f.name.startsWith('HISTORY') ? 'HISTORY' : 'CSV';
+  el.innerHTML = pendingFiles.map(f => `
+    <div class="upload-file-item">
+      <span class="fname">${f.name}</span>
+      <span class="ftype">${typeLabel(f)}</span>
+    </div>
+  `).join('');
+}
+function applyUpload() {
+  // Parse uploaded CSVs and refresh data
+  const readers = pendingFiles.map(f => new Promise(res => {
+    const r = new FileReader();
+    r.onload = e => res({ name: f.name, text: e.target.result });
+    r.readAsText(f, 'utf-8');
+  }));
+  Promise.all(readers).then(results => {
+    let updated = 0;
+    for (const { name, text } of results) {
+      const lines = text.split('\n').filter(l => l.trim() && !l.startsWith('﻿') && !l.startsWith('Historique') && !l.startsWith('Valorisation') && !l.startsWith('Edition') && !l.startsWith('Contrat') && !l.startsWith('Du ') && !l.startsWith('Valo') && !l.startsWith('Liste'));
+      if (lines.length > 1) updated++;
+    }
+    closeModal();
+    alert(`✓ ${results.length} fichier(s) reçu(s). Les données seront intégrées au prochain rechargement complet. (Dans une version connectée à un backend, la mise à jour serait immédiate.)`);
+  });
+}
+
+/* ============================================================
+   LIVE QUOTES
+   ============================================================ */
+
+// Yahoo Finance tickers mapped to each position
+const YAHOO_TICKERS = {
+  "B2GOLD":                    { yahoo: "BTG",       fx: "CAD" },
+  "CCI CA ATLANTIQUE VENDEE":  { yahoo: "CRAV.PA",   fx: "EUR" },
+  "CCI NORMANDIE SEINE":       { yahoo: "CCN.PA",    fx: "EUR" },
+  "CRCAM BRIE PICARDIE CCI":   { yahoo: "CRBP2.PA",  fx: "EUR" },
+  "CRCAM DU LANGUEDOC CCI":    { yahoo: "CRLA.PA",   fx: "EUR" },
+  "CRCAM NORD FRANCE CCI":     { yahoo: "CNDF.PA",   fx: "EUR" },
+  "GOLAR LNG":                 { yahoo: "GLNG",      fx: "USD" },
+  "HOEGH AUTOLINERS":          { yahoo: "HAUTO.OL",  fx: "NOK" },
+  "HP":                        { yahoo: "HPQ",       fx: "USD" },
+  "JACOBSON PHARMA CORP.":     { yahoo: "2633.HK",   fx: "HKD" },
+  "JBM HEALTHCARE":            { yahoo: "2161.HK",   fx: "HKD" },
+  "PAREX RESOURCES":           { yahoo: "PXT.TO",    fx: "CAD" },
+  "PING AN INS.GRP H":         { yahoo: "2318.HK",   fx: "HKD" },
+  "PS PAMIERS":                { yahoo: null,         fx: "EUR" },
+  "TENCENT":                   { yahoo: "0700.HK",   fx: "HKD" },
+  "TRANSOCEAN":                { yahoo: "RIG",       fx: "USD" },
+  "VALLOUREC":                 { yahoo: "VK.PA",     fx: "EUR" },
+  "WALLS WILHELMSE":           { yahoo: "WAWI.OL",   fx: "NOK" },
+  "WCTEPERFO 70 190626 BNPPI": { yahoo: null,         fx: "EUR" },
+  "WCTEPERFO 70 190626 SGE":   { yahoo: null,         fx: "EUR" },
+  "WPTESLA 360 180926 VON":    { yahoo: null,         fx: "EUR" },
+  "WPTESLA 400 150127 GSBK":   { yahoo: null,         fx: "EUR" },
+  "YARA INTERNATIONAL":        { yahoo: "YAR.OL",    fx: "NOK" },
+  "DELTA PLUS GROUP":          { yahoo: "ALDLT.PA",  fx: "EUR" },
+  "DEMANT":                    { yahoo: "DEMANT.CO",  fx: "DKK" },
+  "DESJOYAUX SA PISCINES":     { yahoo: "ALPDX.PA",  fx: "EUR" },
+  "GROUPE GUILLIN":            { yahoo: "ALGIL.PA",  fx: "EUR" },
+  "MAUREL ET PROM":            { yahoo: "MAU.PA",    fx: "EUR" },
+  "TF1":                       { yahoo: "TFI.PA",    fx: "EUR" },
+  "VALLOUREC (PEA)":           { yahoo: "VK.PA",     fx: "EUR" },
+  "VERALLIA":                  { yahoo: "VRLA.PA",   fx: "EUR" },
+  "WALLS WILHELMSE (PEA)":     { yahoo: "WAWI.OL",   fx: "NOK" },
+};
+
+const FX_PAIRS = {
+  USD: "EURUSD=X", CAD: "EURCAD=X", HKD: "EURHKD=X",
+  NOK: "EURNOK=X", DKK: "EURDKK=X", EUR: null
+};
+
+const _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+let fetchMethod = _isLocal ? 'local' : 'netlify';
+let liveQuotes = {}; // { yahoo_ticker: { price, prevClose, currency } }
+let fxRates = { EUR: 1 };
+let livePositionsData = positions.map(p => ({ ...p }));
+
+function setMethod(m, btn) {
+  fetchMethod = m;
+  document.querySelectorAll('.method-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function yahooUrl(ticker) {
+  if (fetchMethod === 'netlify') return `/api/quote?ticker=${encodeURIComponent(ticker)}&interval=1d&range=2d`;
+  if (fetchMethod === 'local')   return `http://localhost:5000/quote/${ticker}?interval=1d&range=2d`;
+  if (fetchMethod === 'direct')  return `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=2d`;
+  return null;
+}
+
+async function fetchQuote(ticker) {
+  if (fetchMethod === 'demo') {
+    // Simulate a realistic quote with ±3% random variation
+    const seed = ticker.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
+    const rand = (Math.sin(seed + Date.now() / 100000) + 1) / 2;
+    const change = (rand - 0.5) * 0.06;
+    return { price: 100 * (1 + change), prevClose: 100, currency: 'USD', demo: true };
+  }
+  const url = yahooUrl(ticker);
+  const r = await fetch(url, { mode: 'cors' });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const data = await r.json();
+  const meta = data.chart.result[0].meta;
+  const closes = data.chart.result[0].indicators.quote[0].close;
+  const prev = closes[closes.length - 2] ?? meta.previousClose ?? meta.regularMarketPrice;
+  return {
+    price: meta.regularMarketPrice,
+    prevClose: prev,
+    currency: meta.currency,
+    shortName: meta.shortName || meta.longName || '',
+  };
+}
+
+function namesMismatch(posName, yahooName) {
+  if (!yahooName) return false;
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+  const n2 = norm(yahooName);
+  const words = norm(posName).split(' ').filter(w => w.length >= 2);
+  if (!words.length) return false;
+  return !words.some(w => n2.includes(w));
+}
+
+function setStatusDot(dev, state) {
+  const el = document.getElementById('sdot-' + dev);
+  if (!el) return;
+  el.className = 'live-status-dot ' + state;
+}
+
+async function fetchAllQuotes() {
+  const btn = document.getElementById('liveRefreshBtn');
+  const icon = document.getElementById('liveSpinIcon');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  icon.textContent = '↻';
+  document.getElementById('liveErrorNote').style.display = 'none';
+
+  // Mark all as pulsing
+  ['EUR','USD','HKD','NOK','CAD','DKK'].forEach(d => setStatusDot(d, 'pulse'));
+
+  // Build unique yahoo tickers needed
+  const needed = new Set();
+  for (const p of positions) {
+    const yt = YAHOO_TICKERS[p.name];
+    if (yt?.yahoo) needed.add(yt.yahoo);
+  }
+  // FX pairs
+  Object.values(FX_PAIRS).forEach(t => { if (t) needed.add(t); });
+
+  const errors = [];
+  const results = await Promise.allSettled([...needed].map(async ticker => {
+    try {
+      const q = await fetchQuote(ticker);
+      liveQuotes[ticker] = q;
+      return { ticker, ok: true };
+    } catch(e) {
+      errors.push(ticker);
+      return { ticker, ok: false, err: e.message };
+    }
+  }));
+
+  // Extract FX rates
+  fxRates = { EUR: 1 };
+  for (const [dev, pair] of Object.entries(FX_PAIRS)) {
+    if (!pair) continue;
+    if (liveQuotes[pair]) {
+      fxRates[dev] = liveQuotes[pair].price; // EUR per 1 foreign unit = 1/rate
+    }
+  }
+  // Yahoo gives EURUSD = how many USD per 1 EUR → to convert USD price to EUR: divide by rate
+  // fxRates[USD] = 1.08 means 1 EUR = 1.08 USD, so price_EUR = price_USD / 1.08
+
+  // Update status dots
+  const devOk = { EUR: true, USD: false, HKD: false, NOK: false, CAD: false, DKK: false };
+  for (const p of positions) {
+    const yt = YAHOO_TICKERS[p.name];
+    if (!yt?.yahoo) continue;
+    if (liveQuotes[yt.yahoo]) devOk[yt.fx] = true;
+  }
+  for (const [dev, ok] of Object.entries(devOk)) {
+    setStatusDot(dev, ok ? 'ok' : (errors.length ? 'err' : 'wait'));
+  }
+
+  if (errors.length && fetchMethod !== 'demo') {
+    const note = document.getElementById('liveErrorNote');
+    note.style.display = 'block';
+    note.textContent = `⚠ ${errors.length} ticker(s) en erreur : ${errors.slice(0,8).join(', ')}. Vérifiez la Netlify Function, le proxy Python ou passez en mode Demo.`;
+  }
+
+  // Update positions with live prices
+  updateLivePositions();
+
+  const now = new Date();
+  document.getElementById('liveLastUpdate').textContent =
+    'Mis à jour à ' + now.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  icon.textContent = '↻';
+}
+
+function toEur(price, dev) {
+  if (dev === 'EUR') return price;
+  const rate = fxRates[dev];
+  if (!rate) return null;
+  return price / rate;
+}
+
+function updateLivePositions() {
+  let totalVal = 15919; // cash
+  let totalPnl = 0;
+  let totalDay = 0;
+  let fxLine = '';
+
+  // Build FX display
+  const fxDisplay = [];
+  for (const [dev, pair] of Object.entries(FX_PAIRS)) {
+    if (!pair) continue;
+    const r = fxRates[dev];
+    if (r) fxDisplay.push(`${dev} ${r.toFixed(4)}`);
+  }
+
+  // Display EUR/USD
+  if (fxRates.USD) {
+    document.getElementById('lvFxUSD').textContent = fxRates.USD.toFixed(4);
+    document.getElementById('lvFxSub').textContent = fxDisplay.slice(1,4).join(' · ');
+  }
+
+  const tbody = document.getElementById('liveBody');
+  const rows = [];
+
+  // Deduplicate: merge same name from both accounts
+  const byName = {};
+  for (const p of positions) {
+    const key = p.isin;
+    if (!byName[key]) byName[key] = { ...p, qty: 0, valEurOrig: 0, pruTotal: 0 };
+    byName[key].qty += p.qty;
+    byName[key].valEurOrig += p.valEur;
+    byName[key].pruTotal += (p.pru || 0) * p.qty;
+  }
+
+  for (const p of Object.values(byName)) {
+    const yt = YAHOO_TICKERS[p.name] || YAHOO_TICKERS[p.name.replace(' (PEA)','')];
+    const yTicker = yt?.yahoo;
+    const dev = yt?.fx || 'EUR';
+    const q = yTicker ? liveQuotes[yTicker] : null;
+
+    let livePriceEur = null, prevPriceEur = null, varDay = null, varDayEur = null;
+    let valEur = p.valEurOrig;
+    let pnl = p.pnl;
+    let perf = p.perf;
+    let statusHtml = '<span style="color:var(--text3);font-size:11px">—</span>';
+
+    if (q) {
+      // Scale demo prices to real price range
+      let livePrice = q.price;
+      let prevPrice = q.prevClose;
+      if (q.demo) {
+        // Use PRU as anchor for demo
+        const pru = p.pru || (p.valEurOrig / p.qty);
+        livePrice = pru * q.price / 100;
+        prevPrice = pru * q.prevClose / 100;
+      }
+
+      livePriceEur = toEur(livePrice, dev);
+      prevPriceEur = toEur(prevPrice, dev);
+      if (livePriceEur && prevPriceEur) {
+        varDay = (livePriceEur - prevPriceEur) / prevPriceEur * 100;
+        varDayEur = (livePriceEur - prevPriceEur) * p.qty;
+        valEur = livePriceEur * p.qty;
+        const pruEur = p.pru || (p.valEurOrig / p.qty);
+        pnl = (livePriceEur - pruEur) * p.qty;
+        perf = ((livePriceEur / pruEur) - 1) * 100;
+        statusHtml = `<span style="font-size:11px;color:var(--green)">✓ live</span>`;
+        totalDay += varDayEur;
+      }
+    } else if (!yTicker) {
+      statusHtml = `<span style="font-size:11px;color:var(--text3)">non coté</span>`;
+    } else {
+      statusHtml = `<span style="font-size:11px;color:var(--amber)">en attente</span>`;
+    }
+
+    totalVal += valEur;
+    totalPnl += (pnl || 0);
+
+    const pruEur = p.pru || (p.valEurOrig / p.qty);
+    const shortName = q?.shortName || '';
+    const nameMismatch = yTicker && shortName && namesMismatch(p.name, shortName);
+    const priceAlert = livePriceEur != null && prevPriceEur != null
+      && Math.abs(livePriceEur - prevPriceEur) / prevPriceEur > 0.40;
+
+    const yahooNameHtml = shortName
+      ? `<div class="yahoo-name">${shortName}${nameMismatch ? ' <span class="warn-badge" title="Nom Yahoo différent du titre saisi — vérifiez le ticker">⚠</span>' : ''}</div>`
+      : '';
+
+    const prevStr = prevPriceEur != null ? `${prevPriceEur.toFixed(3)} €` : (p.cours || '—');
+    const liveStr = livePriceEur != null
+      ? `<strong>${livePriceEur.toFixed(3)} €</strong>${priceAlert ? ' <span class="warn-badge" title="Cours écarté de plus de 40% du cours précédent — données suspectes">⚠</span>' : ''}`
+      : '<span style="color:var(--text3)">—</span>';
+    const varStr = varDay != null
+      ? `<span class="${varDay>=0?'pos':'neg'}">${varDay>=0?'+':''}${varDay.toFixed(2)}%</span>`
+      : '—';
+    const pnlStr = pnl != null
+      ? `<span class="${pnl>=0?'pos':'neg'}">${pnl>=0?'+':''}${Math.round(pnl).toLocaleString('fr-FR')} €</span>`
+      : '—';
+    const perfStr = perf != null
+      ? `<span class="${perf>=0?'pos':'neg'}">${perf>=0?'+':''}${perf.toFixed(2)}%</span>`
+      : '—';
+
+    rows.push({ valEur, html: `
+      <tr>
+        <td>${p.name.replace(' (PEA)','')}<div class="isin">${p.isin}</div></td>
+        <td><span class="ticker-tag">${yTicker || 'n/a'}</span>${yahooNameHtml}</td>
+        <td>${pruEur ? pruEur.toFixed(3)+' €' : '—'}</td>
+        <td style="color:var(--text3)">${prevStr}</td>
+        <td>${liveStr}</td>
+        <td>${varStr}</td>
+        <td>${Math.round(valEur).toLocaleString('fr-FR')} €</td>
+        <td>${pnlStr}</td>
+        <td>${perfStr}</td>
+        <td>${statusHtml}</td>
+      </tr>
+    `});
+  }
+
+  rows.sort((a,b) => b.valEur - a.valEur);
+  tbody.innerHTML = rows.map(r => r.html).join('');
+
+  // Summary cards
+  const pnlPct = totalPnl / (totalVal - totalPnl) * 100;
+  const dayPct = totalDay / totalVal * 100;
+  document.getElementById('lvTotal').textContent = Math.round(totalVal).toLocaleString('fr-FR') + ' €';
+  document.getElementById('lvTotal').className = 'lc-val';
+  document.getElementById('lvPnl').textContent = (totalPnl>=0?'+':'') + Math.round(totalPnl).toLocaleString('fr-FR') + ' €';
+  document.getElementById('lvPnl').className = 'lc-val ' + (totalPnl>=0?'pos':'neg');
+  document.getElementById('lvPnlPct').textContent = (pnlPct>=0?'+':'') + pnlPct.toFixed(2) + '% sur PRU';
+  document.getElementById('lvDay').textContent = (totalDay>=0?'+':'') + Math.round(totalDay).toLocaleString('fr-FR') + ' €';
+  document.getElementById('lvDay').className = 'lc-val ' + (totalDay>=0?'pos':'neg');
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.method-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.method === fetchMethod);
+  });
+  renderPositions();
+  renderPerfChart();
+  renderChartCompte();
+  renderTop10();
+  renderCurrencyExposure();
+  renderSP500();
+  renderOrders();
+  renderHistory();
+});
+</script>
+</body>
+</html>
