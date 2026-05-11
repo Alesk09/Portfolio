@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Yahoo Finance Proxy",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["proxy.py"],
+      "port": 5000
+    },
+    {
+      "name": "Dashboard (serveur statique)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8080"],
+      "port": 8080
+    }
+  ]
+}
