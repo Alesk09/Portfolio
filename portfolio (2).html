@@ -209,6 +209,44 @@ td .account-tag.cto { background: rgba(56,188,212,0.12); color: var(--teal); }
 .method-tab { background: transparent; border: 1px solid var(--border); color: var(--text3); font-family: var(--font); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
 .method-tab.active { border-color: var(--amber); color: var(--amber); background: rgba(232,169,72,0.07); }
 
+/* ===== IMPORT TAB ===== */
+.import-zone { border: 2px dashed var(--border2); border-radius: 14px; padding: 52px 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg2); }
+.import-zone:hover, .import-zone.drag-over { border-color: var(--accent); background: rgba(79,142,247,0.05); }
+.import-zone-icon { font-size: 38px; margin-bottom: 14px; }
+.import-zone-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.import-zone-sub { font-size: 12px; color: var(--text3); line-height: 1.6; }
+.import-preview-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.import-currency-badge { background: rgba(46,204,138,0.1); border: 1px solid rgba(46,204,138,0.3); color: var(--green); font-size: 12px; padding: 5px 14px; border-radius: 20px; font-family: var(--mono); }
+.import-ptabs { display: flex; gap: 6px; }
+.import-ptab { background: transparent; border: 1px solid var(--border); color: var(--text3); font-family: var(--font); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.import-ptab.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.08); }
+.import-info-bar { display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 16px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: var(--text2); }
+.import-info-bar strong { color: var(--text); }
+.import-table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-height: 380px; overflow-y: auto; margin-bottom: 20px; }
+.import-table-wrap table { width: 100%; border-collapse: collapse; }
+.import-table-wrap thead th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--border); font-weight: 400; position: sticky; top: 0; background: var(--bg2); z-index: 1; }
+.import-table-wrap thead th:first-child { text-align: left; }
+.import-table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.import-table-wrap tbody tr:last-child { border-bottom: none; }
+.import-table-wrap tbody tr:hover { background: rgba(255,255,255,0.02); }
+.import-table-wrap td { padding: 9px 12px; text-align: right; font-family: var(--mono); font-size: 12px; color: var(--text2); }
+.import-table-wrap td:first-child { text-align: left; font-family: var(--font); font-weight: 500; color: var(--text); font-size: 13px; }
+.import-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.import-btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text2); font-family: var(--font); font-size: 13px; padding: 9px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.import-btn-cancel:hover { border-color: var(--red); color: var(--red); }
+.import-btn-confirm { background: var(--green); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 500; padding: 9px 22px; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+.import-btn-confirm:hover { opacity: 0.88; }
+.import-summary-box { background: var(--bg2); border: 1px solid rgba(46,204,138,0.3); border-radius: 14px; padding: 32px 28px; max-width: 500px; margin: 48px auto; text-align: center; }
+.import-summary-title { font-size: 17px; font-weight: 600; color: var(--green); margin-bottom: 22px; }
+.import-summary-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text2); padding: 9px 0; border-bottom: 1px solid var(--border); text-align: left; }
+.import-summary-item:last-of-type { border-bottom: none; }
+.import-summary-icon { color: var(--green); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.import-summary-btn { background: var(--accent); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 500; padding: 10px 26px; border-radius: 8px; cursor: pointer; margin-top: 22px; transition: opacity 0.2s; }
+.import-summary-btn:hover { opacity: 0.88; }
+.op-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.op-badge.buy { background: rgba(46,204,138,0.12); color: var(--green); }
+.op-badge.sell { background: rgba(224,90,90,0.12); color: var(--red); }
+
 @media (max-width: 700px) {
   .chart-grid, .currency-grid { grid-template-columns: 1fr; }
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
@@ -236,6 +274,7 @@ td .account-tag.cto { background: rgba(56,188,212,0.12); color: var(--teal); }
   <div class="tab" onclick="showTab('orders')">Ordres</div>
   <div class="tab" onclick="showTab('history')">Historique</div>
   <div class="tab" onclick="showTab('live')">⦿ Cours en direct</div>
+  <div class="tab" onclick="showTab('import')">↑ Import CSV</div>
 </div>
 
 <!-- ===== PORTFOLIO ===== -->
@@ -465,6 +504,40 @@ td .account-tag.cto { background: rgba(56,188,212,0.12); color: var(--teal); }
       <tbody id="histBody"></tbody>
     </table>
   </div>
+</div>
+
+<!-- ===== IMPORT CSV ===== -->
+<div class="page" id="page-import">
+  <div id="importDropArea">
+    <input type="file" id="importFileInput" multiple accept=".csv" style="display:none"
+           onchange="importHandleFiles(this.files)">
+    <div class="import-zone" id="importZone"
+         onclick="document.getElementById('importFileInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="event.preventDefault();this.classList.remove('drag-over');importHandleFiles(event.dataTransfer.files)">
+      <div class="import-zone-icon">📂</div>
+      <div class="import-zone-title">Glissez vos fichiers CSV ici, ou cliquez pour sélectionner</div>
+      <div class="import-zone-sub">
+        POSITIONS · HISTORY · ORDERS — export Crédit Agricole<br>
+        Séparateur point-virgule · Encodage UTF-8 · 4 lignes d'en-tête automatiquement ignorées
+      </div>
+    </div>
+  </div>
+
+  <div id="importPreview" style="display:none">
+    <div class="import-preview-header">
+      <div id="importCurrencyBadge" class="import-currency-badge"></div>
+      <div class="import-ptabs" id="importPtabs"></div>
+    </div>
+    <div id="importPreviewContent"></div>
+    <div class="import-actions">
+      <button class="import-btn-cancel" onclick="cancelImport()">Annuler</button>
+      <button class="import-btn-confirm" onclick="confirmImport()">✓ Confirmer l'import</button>
+    </div>
+  </div>
+
+  <div id="importSummary" style="display:none"></div>
 </div>
 
 <!-- ===== LIVE QUOTES ===== -->
@@ -855,6 +928,7 @@ function renderChartCompte() {
   const pea = positions.filter(p => p.account==='PEA').reduce((s,p) => s+p.valEur, 0);
   const total = cto + pea;
   const ctx = document.getElementById('chartCompte');
+  Chart.getChart(ctx)?.destroy();
   new Chart(ctx, {
     type: 'doughnut',
     data: { labels: ['CTO — INTEGRAL','PEA'], datasets: [{ data: [cto, pea], backgroundColor: ['#38bcd4','#7b5ea7'], borderWidth: 0 }] },
@@ -872,6 +946,7 @@ function renderChartCompte() {
 function renderTop10() {
   const sorted = [...positions].sort((a,b) => b.valEur - a.valEur).slice(0, 10);
   const ctx = document.getElementById('chartTop10');
+  Chart.getChart(ctx)?.destroy();
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -900,6 +975,7 @@ function renderCurrencyExposure() {
   // Donut
   const devColors = { EUR:'#4f8ef7', USD:'#2ecc8a', HKD:'#e8a948', NOK:'#38bcd4', CAD:'#e05a5a', DKK:'#7b5ea7' };
   const ctx = document.getElementById('chartDevise');
+  Chart.getChart(ctx)?.destroy();
   new Chart(ctx, {
     type: 'doughnut',
     data: { labels: sorted.map(d => d[0]), datasets: [{ data: sorted.map(d => Math.round(d[1])), backgroundColor: sorted.map(d => devColors[d[0]] || '#888'), borderWidth: 0 }] },
@@ -1045,10 +1121,11 @@ function renderHistory() {
    TAB NAV
    ============================================================ */
 function showTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i) => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  const tabs = ['portfolio','exposure','sp500','orders','history','live'];
-  document.querySelectorAll('.tab')[tabs.indexOf(t)].classList.add('active');
+  const tabs = ['portfolio','exposure','sp500','orders','history','live','import'];
+  const idx = tabs.indexOf(t);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
   document.getElementById('page-'+t).classList.add('active');
 }
 
@@ -1090,6 +1167,412 @@ function applyUpload() {
     closeModal();
     alert(`✓ ${results.length} fichier(s) reçu(s). Les données seront intégrées au prochain rechargement complet. (Dans une version connectée à un backend, la mise à jour serait immédiate.)`);
   });
+}
+
+/* ============================================================
+   IMPORT CSV — Crédit Agricole
+   Séparateur ;  ·  UTF-8 BOM  ·  4 lignes de métadonnées à ignorer
+   ============================================================ */
+
+let importState = { parsed: {}, currency: '€', activeTab: null };
+
+/* ---------- Parsing bas niveau ---------- */
+
+function splitCSVLine(line) {
+  const result = []; let cur = '', inQ = false;
+  for (const ch of line) {
+    if (ch === '"') { inQ = !inQ; continue; }
+    if (ch === ';' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function parseCSV(text) {
+  text = text.replace(/^﻿/, '');           // strip UTF-8 BOM
+  const lines = text.split(/\r?\n/);
+  const meta = []; let headerIdx = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    if (meta.length < 4) { meta.push(lines[i].trim()); continue; }
+    headerIdx = i; break;
+  }
+  if (headerIdx < 0) return { headers: [], rows: [], meta };
+  const headers = splitCSVLine(lines[headerIdx]);
+  const rows = [];
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const cols = splitCSVLine(lines[i]);
+    const obj = {};
+    headers.forEach((h, idx) => { if (h) obj[h] = (cols[idx] || '').trim(); });
+    if (Object.values(obj).some(v => v)) rows.push(obj);
+  }
+  return { headers, rows, meta };
+}
+
+function parseCANum(s) {
+  if (!s) return null;
+  s = s.trim();
+  if (!s || s === '-' || s === '--') return null;
+  let c = s.replace(/[€$£%]/g, '').replace(/\bCHF\b/g, '').replace(/\bkr\b/i, '').trim();
+  c = c.replace(/[\s  ]/g, '');   // espaces milliers
+  c = c.replace(',', '.');
+  const n = parseFloat(c);
+  return isNaN(n) ? null : n;
+}
+
+function parseCAQty(s) {
+  if (!s) return null;
+  return parseCANum(s.replace(/,\s*$/, '')); // supprime virgule parasite finale
+}
+
+function findCol(headers, patterns) {
+  return headers.find(h => patterns.some(p => p.test(h))) || null;
+}
+
+function detectCurrency(rows, headers) {
+  const col = findCol(headers, [/valoris/i, /montant/i]);
+  if (!col) return '€';
+  const checks = [['CHF', /CHF/], ['£', /£/], ['$', /\$/], ['kr', /\bkr\b/i], ['€', /€/]];
+  const counts = {};
+  for (const row of rows.slice(0, 30)) {
+    const v = row[col] || '';
+    for (const [sym, re] of checks) { if (re.test(v)) { counts[sym] = (counts[sym]||0)+1; break; } }
+  }
+  const best = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
+  return best ? best[0] : '€';
+}
+
+function detectAccount(meta, filename) {
+  const hay = (meta.join(' ') + ' ' + (filename||'')).toUpperCase();
+  return /\bPEA\b/.test(hay) ? 'PEA' : 'CTO';
+}
+
+function detectFileType(filename) {
+  const u = filename.toUpperCase();
+  if (u.includes('POSITION')) return 'positions';
+  if (u.includes('HISTOR'))   return 'history';
+  if (u.includes('ORDER') || u.includes('ORDRE')) return 'orders';
+  return null;
+}
+
+/* ---------- Parseurs typés ---------- */
+
+function parsePositionsCSV({ headers, rows, meta }, filename) {
+  const account  = detectAccount(meta, filename);
+  const currency = detectCurrency(rows, headers);
+  const cName  = findCol(headers, [/libell/i, /^valeur$/i, /^nom/i, /titre/i]);
+  const cISIN  = findCol(headers, [/isin/i, /code valeur/i]);
+  const cQty   = findCol(headers, [/quantit/i]);
+  const cCours = findCol(headers, [/^cours/i]);
+  const cVal   = findCol(headers, [/valoris/i]);
+  const cPRU   = findCol(headers, [/prix de revient/i, /revient/i, /\bpru\b/i, /co[uû]t/i]);
+  const cPnL   = findCol(headers, [/\+.*value/i, /value latente/i]);
+  const cPerf  = findCol(headers, [/perf/i]);
+  return {
+    account, currency,
+    data: rows
+      .filter(r => cISIN && (r[cISIN]||'').trim().length >= 5)
+      .map(r => ({
+        name:   (cName  ? r[cName]  : '').trim(),
+        isin:   (cISIN  ? r[cISIN]  : '').trim(),
+        qty:    parseCAQty(r[cQty]),
+        cours:  (cCours ? r[cCours] : '').trim(),
+        valRef: parseCANum(r[cVal]),
+        pru:    parseCANum(r[cPRU]),
+        pnl:    parseCANum(r[cPnL]),
+        perf:   parseCANum(r[cPerf]),
+        account,
+        devise: currency === '€' ? 'EUR' : currency,
+      })),
+  };
+}
+
+function parseHistoryCSV({ headers, rows, meta }, filename) {
+  const account = detectAccount(meta, filename);
+  const cOp    = findCol(headers, [/op.ration/i, /type op/i, /libell.*op/i]);
+  const cVal   = findCol(headers, [/^valeur$/i, /libell.*val/i, /^nom/i, /titre/i]);
+  const cISIN  = findCol(headers, [/isin/i]);
+  const cQty   = findCol(headers, [/quantit/i]);
+  const cNet   = findCol(headers, [/montant net/i, /\bnet\b/i]);
+  const cFrais = findCol(headers, [/frais/i, /commission/i]);
+  const cDate  = findCol(headers, [/date/i]);
+  return {
+    data: rows
+      .filter(r => cOp && (r[cOp]||'').trim())
+      .map(r => ({
+        op:    (cOp    ? r[cOp]    : '').trim(),
+        val:   (cVal   ? r[cVal]   : '').trim(),
+        isin:  (cISIN  ? r[cISIN]  : '').trim(),
+        qty:   parseCAQty(r[cQty]),
+        net:   parseCANum(r[cNet]),
+        frais: parseCANum(r[cFrais]),
+        date:  (cDate  ? r[cDate]  : '').trim(),
+        account,
+      })),
+  };
+}
+
+function parseOrdersCSV({ headers, rows, meta }, filename) {
+  const account = detectAccount(meta, filename);
+  const cType   = findCol(headers, [/type/i, /sens/i]);
+  const cName   = findCol(headers, [/libell/i, /^nom/i, /valeur/i, /titre/i]);
+  const cISIN   = findCol(headers, [/isin/i]);
+  const cQty    = findCol(headers, [/quantit/i]);
+  const cCours  = findCol(headers, [/cours ex/i, /^cours/i, /prix ex/i]);
+  const cAmount = findCol(headers, [/montant/i]);
+  const cStatus = findCol(headers, [/statut/i, /[eé]tat/i]);
+  const cDate   = findCol(headers, [/date/i]);
+  return {
+    data: rows
+      .filter(r => cType && (r[cType]||'').trim())
+      .map(r => ({
+        type:    (cType   ? r[cType]   : '').trim(),
+        name:    (cName   ? r[cName]   : '').trim(),
+        isin:    (cISIN   ? r[cISIN]   : '').trim(),
+        qty:     parseCAQty(r[cQty]),
+        cours:   (cCours  ? r[cCours]  : '').trim(),
+        montant: (cAmount ? r[cAmount] : '').trim(),
+        statut:  (cStatus ? r[cStatus] : '').trim(),
+        date:    (cDate   ? r[cDate]   : '').trim(),
+        account,
+      })),
+  };
+}
+
+/* ---------- Lecture des fichiers ---------- */
+
+function importHandleFiles(files) {
+  importState = { parsed: {}, currency: '€', activeTab: null };
+  if (!files.length) return;
+  const readers = Array.from(files).map(f => new Promise(res => {
+    const r = new FileReader();
+    r.onload = e => res({ name: f.name, text: e.target.result });
+    r.readAsText(f, 'utf-8');
+  }));
+  Promise.all(readers).then(results => {
+    for (const { name, text } of results) {
+      const type = detectFileType(name);
+      if (!type) continue;
+      const csv = parseCSV(text);
+      if (!csv.rows.length) continue;
+      if (type === 'positions') {
+        const r = parsePositionsCSV(csv, name);
+        importState.parsed.positions = r.data;
+        importState.currency = r.currency;
+      } else if (type === 'history') {
+        importState.parsed.history = parseHistoryCSV(csv, name).data;
+      } else if (type === 'orders') {
+        importState.parsed.orders = parseOrdersCSV(csv, name).data;
+      }
+    }
+    importState.activeTab = Object.keys(importState.parsed)[0] || null;
+    renderImportUI();
+  });
+}
+
+/* ---------- UI ---------- */
+
+function fmtRef(n) {
+  if (n == null) return '—';
+  const sym = importState.currency;
+  const abs = Math.abs(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sign = n < 0 ? '-' : '';
+  return (sym === '$' || sym === '£') ? `${sign}${sym}${abs}` : `${sign}${abs} ${sym}`;
+}
+
+function renderImportUI() {
+  const keys = Object.keys(importState.parsed);
+  if (!keys.length) { cancelImport(); return; }
+  document.getElementById('importDropArea').style.display = 'none';
+  document.getElementById('importSummary').style.display = 'none';
+  document.getElementById('importPreview').style.display = 'block';
+  document.getElementById('importCurrencyBadge').textContent = `Devise détectée : ${importState.currency}`;
+  const labels = { positions: 'Positions', history: 'Historique', orders: 'Ordres' };
+  document.getElementById('importPtabs').innerHTML = keys.map(k =>
+    `<button class="import-ptab${k === importState.activeTab ? ' active' : ''}" onclick="switchImportTab('${k}')">${labels[k]||k}</button>`
+  ).join('');
+  renderImportTable(importState.activeTab);
+}
+
+function switchImportTab(type) {
+  importState.activeTab = type;
+  renderImportUI();
+}
+
+function cancelImport() {
+  importState = { parsed: {}, currency: '€', activeTab: null };
+  const fi = document.getElementById('importFileInput');
+  if (fi) fi.value = '';
+  document.getElementById('importDropArea').style.display = 'block';
+  document.getElementById('importPreview').style.display = 'none';
+  document.getElementById('importSummary').style.display = 'none';
+}
+
+function renderImportTable(type) {
+  const data = importState.parsed[type];
+  const el = document.getElementById('importPreviewContent');
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="color:var(--text3);padding:24px;text-align:center">Aucune donnée parsée — vérifiez le format du fichier.</p>';
+    return;
+  }
+  const sym = importState.currency;
+  const account = data[0]?.account || '?';
+
+  if (type === 'positions') {
+    el.innerHTML = `
+      <div class="import-info-bar">
+        <span><strong>${data.length}</strong> position(s) détectée(s)</span>
+        <span>Compte : <strong>${account}</strong></span>
+        <span>Devise de référence : <strong>${sym}</strong></span>
+      </div>
+      <div class="import-table-wrap"><table>
+        <thead><tr>
+          <th>Titre</th><th>ISIN</th><th>Quantité</th><th>Cours</th>
+          <th>Valorisation</th><th>PRU</th><th>+/- Value</th><th>Perf</th>
+        </tr></thead>
+        <tbody>${data.map(r => `<tr>
+          <td>${r.name}</td>
+          <td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${r.isin}</td>
+          <td>${r.qty != null ? r.qty.toLocaleString('fr-FR') : '—'}</td>
+          <td style="color:var(--text3)">${r.cours}</td>
+          <td>${fmtRef(r.valRef)}</td>
+          <td style="color:var(--text3)">${r.pru != null ? r.pru.toLocaleString('fr-FR',{minimumFractionDigits:3,maximumFractionDigits:3}) : '—'}</td>
+          <td class="${r.pnl==null?'':r.pnl>=0?'pos':'neg'}">${r.pnl!=null?(r.pnl>=0?'+':'')+fmtRef(r.pnl):'—'}</td>
+          <td class="${r.perf==null?'':r.perf>=0?'pos':'neg'}">${r.perf!=null?(r.perf>=0?'+':'')+r.perf.toFixed(2)+'%':'—'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  } else if (type === 'history') {
+    el.innerHTML = `
+      <div class="import-info-bar">
+        <span><strong>${data.length}</strong> opération(s)</span>
+        <span>Compte : <strong>${account}</strong></span>
+      </div>
+      <div class="import-table-wrap"><table>
+        <thead><tr>
+          <th>Opération</th><th>Valeur</th><th>ISIN</th>
+          <th>Quantité</th><th>Montant net</th><th>Frais</th><th>Date</th>
+        </tr></thead>
+        <tbody>${data.map(r => `<tr>
+          <td>${r.op}</td>
+          <td style="color:var(--text2)">${r.val}</td>
+          <td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${r.isin}</td>
+          <td>${r.qty!=null?r.qty.toLocaleString('fr-FR'):'—'}</td>
+          <td class="${r.net==null?'':r.net>=0?'pos':'neg'}">${r.net!=null?(r.net>=0?'+':'')+fmtRef(r.net):'—'}</td>
+          <td style="color:var(--text3)">${r.frais!=null?r.frais.toLocaleString('fr-FR',{minimumFractionDigits:2}):'—'}</td>
+          <td style="color:var(--text3)">${r.date}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  } else if (type === 'orders') {
+    el.innerHTML = `
+      <div class="import-info-bar">
+        <span><strong>${data.length}</strong> ordre(s)</span>
+        <span>Compte : <strong>${account}</strong></span>
+      </div>
+      <div class="import-table-wrap"><table>
+        <thead><tr>
+          <th>Type</th><th>Titre</th><th>ISIN</th>
+          <th>Quantité</th><th>Cours exec.</th><th>Montant</th><th>Statut</th><th>Date</th>
+        </tr></thead>
+        <tbody>${data.map(r => {
+          const isBuy = /achat/i.test(r.type);
+          return `<tr>
+            <td><span class="op-badge ${isBuy?'buy':'sell'}">${r.type}</span></td>
+            <td>${r.name}</td>
+            <td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${r.isin}</td>
+            <td>${r.qty!=null?r.qty.toLocaleString('fr-FR'):'—'}</td>
+            <td style="color:var(--text2)">${r.cours}</td>
+            <td style="color:var(--text2)">${r.montant}</td>
+            <td style="color:var(--text3);font-size:11px">${r.statut}</td>
+            <td style="color:var(--text3)">${r.date}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>`;
+  }
+}
+
+/* ---------- Fusion & confirmation ---------- */
+
+function confirmImport() {
+  const s = { posUpdated: 0, posAdded: 0, histRows: 0, ordersRows: 0 };
+
+  if (importState.parsed.positions) {
+    const r = mergePositions(importState.parsed.positions);
+    s.posUpdated = r.updated; s.posAdded = r.added;
+  }
+  if (importState.parsed.history) {
+    historyData.length = 0;
+    importState.parsed.history.forEach(r => historyData.push(r));
+    s.histRows = historyData.length;
+  }
+  if (importState.parsed.orders) {
+    orders.length = 0;
+    importState.parsed.orders.forEach(r => orders.push({
+      account: r.account, type: r.type, name: r.name, isin: r.isin,
+      qty: r.qty, cours: r.cours, montant: r.montant, statut: r.statut, date: r.date,
+    }));
+    s.ordersRows = orders.length;
+  }
+
+  // Re-render tous les vues qui dépendent des données importées
+  renderPositions();
+  renderPerfChart();
+  ['chartCompte','chartTop10','chartDevise'].forEach(id => Chart.getChart(document.getElementById(id))?.destroy());
+  renderChartCompte();
+  renderTop10();
+  renderCurrencyExposure();
+  renderOrders();
+  renderHistory();
+
+  showImportSummary(s);
+}
+
+function mergePositions(imported) {
+  let updated = 0, added = 0;
+  for (const row of imported) {
+    if (!row.isin) continue;
+    const idx = positions.findIndex(p => p.isin === row.isin && p.account === row.account);
+    if (idx >= 0) {
+      Object.assign(positions[idx], {
+        qty: row.qty, cours: row.cours, valEur: row.valRef,
+        pru: row.pru, pnl: row.pnl, perf: row.perf,
+      });
+      updated++;
+    } else {
+      positions.push({
+        name: row.name, isin: row.isin, account: row.account,
+        qty: row.qty, cours: row.cours, valEur: row.valRef,
+        pru: row.pru, pnl: row.pnl, perf: row.perf,
+        var1jpct: null, var1j: null, devise: row.devise || 'EUR',
+      });
+      added++;
+    }
+  }
+  return { updated, added };
+}
+
+function showImportSummary(s) {
+  document.getElementById('importPreview').style.display = 'none';
+  const sym = importState.currency;
+  const items = [];
+  if (s.posUpdated || s.posAdded)
+    items.push(`<div class="import-summary-item"><span class="import-summary-icon">✓</span><span>${s.posUpdated} position(s) mise(s) à jour · ${s.posAdded} nouvelle(s) ajoutée(s)</span></div>`);
+  if (s.histRows)
+    items.push(`<div class="import-summary-item"><span class="import-summary-icon">✓</span><span>${s.histRows} opération(s) importée(s) dans l'historique</span></div>`);
+  if (s.ordersRows)
+    items.push(`<div class="import-summary-item"><span class="import-summary-icon">✓</span><span>${s.ordersRows} ordre(s) importé(s)</span></div>`);
+  if (sym !== '€')
+    items.push(`<div class="import-summary-item"><span class="import-summary-icon">ℹ</span><span>Devise de référence détectée : <strong>${sym}</strong> — valorisations affichées en ${sym}</span></div>`);
+
+  const el = document.getElementById('importSummary');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="import-summary-box">
+      <div class="import-summary-title">✓ Import réussi</div>
+      ${items.join('')}
+      <button class="import-summary-btn" onclick="cancelImport();showTab('portfolio')">Voir le portefeuille →</button>
+    </div>`;
 }
 
 /* ============================================================
